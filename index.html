@@ -1013,10 +1013,12 @@ a.nexus-link{
 
 const glow = document.querySelector(".portal-glow");
 
-setInterval(()=>{
-  const scale = 0.9 + Math.random()*0.4;
-  glow.style.transform = `scale(${scale})`;
-},2500);
+if (glow) {
+  setInterval(()=>{
+    const scale = 0.9 + Math.random()*0.4;
+    glow.style.transform = `scale(${scale})`;
+  },2500);
+}
     </script>
   </body>
 </html>
