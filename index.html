@@ -140,10 +140,9 @@
   }
 
 }
-      .nexus-link{
-  cursor:pointer !important;
+a.nexus-link{
+  cursor: pointer;
 }
-
     </style>
 
 
@@ -921,19 +920,23 @@
           'filter': ':not([href="reflections.html"]):not([href="gallery.html"]):not([href="moods.html"])'
         });        
         // Add smooth scrolling to all links except Reflections, Gallery, Moods
-        $("a").on('click', function(event) {
-          var href = $(this).attr('href');
-          // Allow normal navigation for reflections, gallery, moods
-          if (this.hash !== "") {
-            event.preventDefault();
-            var hash = this.hash;
-            $('html, body').animate({
-              scrollTop: $(hash).offset().top
-            }, 600, 'easeInOutExpo', function(){
-              window.location.hash = hash;
-            });
-          }
-        });
+     $('a[href^="#"]').on('click', function(event) {
+
+  if (this.hash !== "") {
+
+    event.preventDefault();
+
+    var hash = this.hash;
+
+    $('html, body').animate({
+      scrollTop: $(hash).offset().top
+    }, 600, 'easeInOutExpo', function(){
+      window.location.hash = hash;
+    });
+
+  }
+
+});
         // Pop up
         $('.tm-gallery').magnificPopup({
           delegate: 'a',
@@ -1017,4 +1020,3 @@ setInterval(()=>{
     </script>
   </body>
 </html>
-
