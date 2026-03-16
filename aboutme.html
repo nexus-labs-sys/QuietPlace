@@ -36,32 +36,42 @@
       opacity: 0.8;
     }
     .aboutme-container {
-  max-width: 700px;
-  margin: 3rem auto;
-  padding: 0 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+      max-width: 700px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .aboutme-box {
-  font-size: 1.1rem;
-  margin: 2rem 0;
-  padding: 1.5rem;
-  background: #1a1a1a;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  width: 100%;
-  max-width: 500px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+      font-size: 1.1rem;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #1a1a1a;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .aboutme-box strong {
+      color: #b6e0ff;
+    }
+    /* FIXED: moved outside .aboutme-box and out of its closing brace */
     .aboutme-social {
       display: flex;
       justify-content: center;
-      gap: 1.2rem;
+      align-items: center;
+      gap: 0.8rem;
       margin: 2.5rem 0 1.5rem 0;
       flex-wrap: wrap;
+      width: 100%;
+      max-width: 500px;
+      padding: 0 1rem;
+      box-sizing: border-box;
     }
     .aboutme-social a {
       display: inline-block;
@@ -72,16 +82,21 @@
       font-weight: 600;
       text-decoration: none;
       transition: background 0.2s, color 0.2s;
-      margin: 0 0.2rem 0.5rem 0.2rem;
       text-align: center;
     }
     .aboutme-social a:hover {
       background: #7fcfff;
       color: #0e0e0e;
     }
-    }
-    .aboutme-box strong {
-      color: #b6e0ff;
+    @media (max-width: 480px) {
+      .aboutme-social {
+        flex-direction: column;
+        align-items: center;
+      }
+      .aboutme-social a {
+        width: 80%;
+        text-align: center;
+      }
     }
     footer {
       text-align: center;
@@ -100,66 +115,65 @@
   </header>
   <div class="aboutme-container">
     <div class="aboutme-box">
-<h2 style="margin-top:0; color:#b6e0ff;">Hi, I'm Priyan!</h2>
-<p id="aboutme-typing" style="color:#e0e0e0; line-height:1.6; min-height: 220px;"></p>
-<style>
-  .typing-cursor {
-    display: inline-block;
-    width: 1ch;
-    background: none;
-    color: #b6e0ff;
-    animation: blink 1s steps(1) infinite;
-    font-weight: bold;
-    font-size: 1.1em;
-    vertical-align: middle;
-  }
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-</style>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const text = `<strong>INFJ-A</strong>, the kind who finds meaning in both silence and signals.<br><br>
+      <h2 style="margin-top:0; color:#b6e0ff;">Hi, I'm Priyan!</h2>
+      <p id="aboutme-typing" style="color:#e0e0e0; line-height:1.6; min-height: 220px;"></p>
+      <style>
+        .typing-cursor {
+          display: inline-block;
+          width: 1ch;
+          background: none;
+          color: #b6e0ff;
+          animation: blink 1s steps(1) infinite;
+          font-weight: bold;
+          font-size: 1.1em;
+          vertical-align: middle;
+        }
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+      </style>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const text = `<strong>INFJ-A</strong>, the kind who finds meaning in both silence and signals.<br><br>
   I love shaping <strong>patterns of signals</strong>, turning them into something alive - 
   because for me, design is just another form of reflection.<br><br>
-  When I’m not lost in schematics, I write. This site began as a space for my 
+  When I'm not lost in schematics, I write. This site began as a space for my 
   <strong>reflections</strong>, where words drift like signals on a quiet line.<br><br>
   I enjoy <strong>trekking, evening walks, and camping</strong> - small adventures that remind me 
   the world is as layered as any circuit.<br><br>
   I know just enough coding to bring this page alive - part hobby, part journal.<br><br>
   If something here resonates, feel free to send a request.`;
-    const target = document.getElementById('aboutme-typing');
-    let i = 0;
-    let isTag = false;
-    let html = '';
-    function type() {
-      if (i < text.length) {
-        let char = text[i];
-        if (char === '<') isTag = true;
-        if (isTag) {
-          html += char;
-          if (char === '>') isTag = false;
-        } else {
-          html += char;
-        }
-        target.innerHTML = html + '<span class="typing-cursor">|</span>';
-        i++;
-        setTimeout(type, 18 + Math.random() * 30);
-      } else {
-        target.innerHTML = html; // Remove cursor at end
-      }
-    }
-    type();
-  });
-</script>
-       
-      </p>
+          const target = document.getElementById('aboutme-typing');
+          let i = 0;
+          let isTag = false;
+          let html = '';
+          function type() {
+            if (i < text.length) {
+              let char = text[i];
+              if (char === '<') isTag = true;
+              if (isTag) {
+                html += char;
+                if (char === '>') isTag = false;
+              } else {
+                html += char;
+              }
+              target.innerHTML = html + '<span class="typing-cursor">|</span>';
+              i++;
+              setTimeout(type, 18 + Math.random() * 30);
+            } else {
+              target.innerHTML = html;
+            }
+          }
+          type();
+        });
+      </script>
     </div>
-  <div class="aboutme-social">
-      <a href="https://www.instagram.com/" target="_blank" style="display:inline-block; margin:0 0.7rem; padding:0.7rem 1.3rem; background:#b6e0ff; color:#141414; border-radius:24px; font-weight:600; text-decoration:none; transition:background 0.2s;">Instagram</a>
-      <a href="https://discord.gg/SNhzuKCvhw" target="_blank" style="display:inline-block; margin:0 0.7rem; padding:0.7rem 1.3rem; background:#b6e0ff; color:#141414; border-radius:24px; font-weight:600; text-decoration:none; transition:background 0.2s;">Discord</a>
-      <a href="https://www.twitch.tv/pri_yan_" target="_blank" style="display:inline-block; margin:0 0.7rem; padding:0.7rem 1.3rem; background:#b6e0ff; color:#141414; border-radius:24px; font-weight:600; text-decoration:none; transition:background 0.2s;">Twitch</a>
+
+    <div class="aboutme-social">
+      <a href="https://www.instagram.com/" target="_blank">Instagram</a>
+      <a href="https://discord.gg/SNhzuKCvhw" target="_blank">Discord</a>
+      <a href="https://www.twitch.tv/pri_yan_" target="_blank">Twitch</a>
     </div>
   </div>
   <footer>
