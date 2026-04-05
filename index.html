@@ -21,9 +21,9 @@
     <link rel="stylesheet" href="css/tooplate-infinite-loop.css" />
     <style>
       .tm-video-bg {
-  position: relative;
-  overflow: visible;
-}
+        position: relative;
+        overflow: hidden;
+      }
       #bg-video {
         position: absolute;
         top: 0;
@@ -105,44 +105,7 @@
   transform: scale(1.08);
   background: rgba(255,255,255,0.18);
 }
-/* Engineers Nexus Portal Button */
-/* Engineers Nexus glowing header */
 
-.nexus-link {
-  color: #cfe9ff !important;
-  text-shadow:
-    0 0 6px #4db8ff,
-    0 0 12px #4db8ff,
-    0 0 20px rgba(77,184,255,0.6);
-  transition: all 0.3s ease;
-}
-
-.nexus-link:hover {
-  text-shadow:
-    0 0 10px #4db8ff,
-    0 0 18px #4db8ff,
-    0 0 28px rgba(77,184,255,0.9);
-}
-
-
-
-@media (max-width:768px){
-
-  .nexus-link{
-    display:block;
-    width:100%;
-    text-align:right;   /* move text to right side */
-    padding:12px 16px;
-
-    text-shadow:
-      0 0 4px #4db8ff,
-      0 0 8px #4db8ff;
-  }
-
-}
-a.nexus-link{
-  cursor: pointer;
-}
     </style>
 
 
@@ -155,7 +118,6 @@ a.nexus-link{
   <canvas id="blossom-bg" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; display:none;"></canvas>
   <!-- Hero section with video background -->
     <section id="infinite" class="text-white tm-font-big tm-video-bg">
-    
       <video autoplay muted loop playsinline id="bg-video">
         <source src="img/background.mp4" type="video/mp4">
         Your browser does not support the video tag.
@@ -186,19 +148,13 @@ a.nexus-link{
         </li>
         <li class="nav-item">
           <a class="nav-link tm-nav-link" href="aboutme.html" onclick="window.location.href='aboutme.html'; return false;">About Me</a>
-        </li>                    
-  <li class="nav-item">
-        <a class="nav-link" href="focus.html" onclick="window.location.href='focus.html'; return false;">Focus</a>
         </li>
-              
-<!-- <li class="nav-item">
-  <a class="nav-link tm-nav-link nexus-link"
-     href="#"
-     onclick="window.open('https://discord.gg/SNhzuKCvhw','_blank'); return false;">
-     Join The Nexus
-  </a>
-</li> -->
-     
+                      <li class="nav-item">
+          <a class="nav-link tm-nav-link" href="aboutme.html" onclick="window.location.href='focus.html'; return false;">About Me</a>
+        </li>  
+          <!-- <li class="nav-item">
+            <a class="nav-link tm-nav-link" href="#contact-hero">Contact</a>
+          </li> -->
             </ul>
           </div>        
         </div>
@@ -210,8 +166,6 @@ a.nexus-link{
             <p class="tm-hero-subtitle">
               <span id="typewriter"></span>
             </p>
-          
-
         </div>        
       </div>
 
@@ -527,7 +481,7 @@ a.nexus-link{
     <!-- Typewriter effect -->
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        var text = " A quiet archive of human moments";
+        var text = "Reflections • Silence • Fire • Shadows • Light";
         var i = 0;
         var speed = 70;
         var el = document.getElementById("typewriter");
@@ -923,23 +877,19 @@ a.nexus-link{
           'filter': ':not([href="reflections.html"]):not([href="gallery.html"]):not([href="moods.html"])'
         });        
         // Add smooth scrolling to all links except Reflections, Gallery, Moods
-     $('a[href^="#"]').on('click', function(event) {
-
-  if (this.hash !== "") {
-
-    event.preventDefault();
-
-    var hash = this.hash;
-
-    $('html, body').animate({
-      scrollTop: $(hash).offset().top
-    }, 600, 'easeInOutExpo', function(){
-      window.location.hash = hash;
-    });
-
-  }
-
-});
+        $("a").on('click', function(event) {
+          var href = $(this).attr('href');
+          // Allow normal navigation for reflections, gallery, moods
+          if (this.hash !== "") {
+            event.preventDefault();
+            var hash = this.hash;
+            $('html, body').animate({
+              scrollTop: $(hash).offset().top
+            }, 600, 'easeInOutExpo', function(){
+              window.location.hash = hash;
+            });
+          }
+        });
         // Pop up
         $('.tm-gallery').magnificPopup({
           delegate: 'a',
@@ -1012,16 +962,6 @@ a.nexus-link{
         ]
         });
       });
-// subtle glow breathing effect
-
-const glow = document.querySelector(".portal-glow");
-
-if (glow) {
-  setInterval(()=>{
-    const scale = 0.9 + Math.random()*0.4;
-    glow.style.transform = `scale(${scale})`;
-  },2500);
-}
     </script>
   </body>
 </html>
