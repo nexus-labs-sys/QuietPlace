@@ -1,966 +1,1075 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" 
-    rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Quiet Place</title>
 
-      <!-- Open Graph image for Discord/social previews -->
   <meta property="og:image" content="img/icons8-stars-16.png" />
-  <!-- PNG Favicon -->
   <link rel="icon" type="image/png" href="img/icons8-stars-16.png" />
-    <link rel="stylesheet" href="fontawesome-5.5/css/all.min.css" />
-    <link rel="stylesheet" href="slick/slick.css">
-    <link rel="stylesheet" href="slick/slick-theme.css">
-    <link rel="stylesheet" href="magnific-popup/magnific-popup.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/tooplate-infinite-loop.css" />
-    <style>
-      .tm-video-bg {
-        position: relative;
-        overflow: hidden;
-      }
-      #bg-video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        object-fit: cover;
-        z-index: 0;
-      }
-      #bg-video-testimonials {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        object-fit: cover;
-        z-index: 0;
-      }
-      .tm-hero-text-container,
-      .tm-intro-next {
-        position: relative;
-        z-index: 2;
-      }
-      .tm-video-bg:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0,0,0,0.5);
-        z-index: 1;
-      }
-   #about-space {
-  font-family: 'Inter', sans-serif;
-  padding-bottom: 80px;
-}
 
-#about-space h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.4rem;
-  letter-spacing: 1px;
-}
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fontawesome-5.5/css/all.min.css" />
+  <link rel="stylesheet" href="slick/slick.css">
+  <link rel="stylesheet" href="slick/slick-theme.css">
+  <link rel="stylesheet" href="magnific-popup/magnific-popup.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/tooplate-infinite-loop.css" />
 
-#ritual-text {
-  font-size: 1.15rem;
-  line-height: 1.9;
-  min-height: 140px;
-}
+  <style>
+    /* ══════════════════════════════════════
+       DESIGN TOKENS
+    ══════════════════════════════════════ */
+    :root {
+      --bg:        #080810;
+      --bg2:       #0c0c1a;
+      --surface:   rgba(255,255,255,0.04);
+      --surface2:  rgba(255,255,255,0.07);
+      --border:    rgba(255,255,255,0.08);
+      --accent:    #b6c8ff;
+      --accent2:   #7fa3ff;
+      --text:      #e8eaf0;
+      --muted:     rgba(232,234,240,0.48);
+      --radius:    18px;
 
-.space-card {
-  padding: 30px 25px;
-  border-radius: 14px;
-  transition: all 0.4s ease;
-  background: rgba(255,255,255,0.03);
-  backdrop-filter: blur(6px);
-}
+      /* Mood-driven CSS vars (changed by JS) */
+      --mood-bg:        #080810;
+      --mood-bg2:       #0c0c1a;
+      --mood-accent:    #b6c8ff;
+      --mood-accent2:   #7fa3ff;
+      --mood-text:      #e8eaf0;
+      --mood-muted:     rgba(232,234,240,0.48);
+      --mood-border:    rgba(255,255,255,0.08);
+      --mood-surface:   rgba(255,255,255,0.04);
+    }
 
-.space-card:hover {
-  transform: translateY(-8px);
-  background: rgba(255,255,255,0.07);
-}
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-.share-ritual-btn {
-  display: inline-block;
-  margin-top: 40px;
-  padding: 14px 36px;
-  border-radius: 40px;
-  text-decoration: none;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.2rem;
-  letter-spacing: 1px;
-  transition: all 0.4s ease;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px);
-}
+    body {
+      background: #080810;
+      color: var(--mood-text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      margin: 0;
+      overflow-x: hidden;
+      transition: color 0.8s ease;
+    }
 
-.share-ritual-btn:hover {
-  transform: scale(1.08);
-  background: rgba(255,255,255,0.18);
-}
+    /* Mood theme transition on all key elements */
+    .qp-section, footer.qp-footer, .qp-navbar.scrolled,
+    .space-card, .tm-testimonial-item, #contact-band {
+      transition: background 1.2s ease, border-color 0.8s ease, color 0.8s ease;
+    }
 
-    </style>
+    /* ══════════════════════════════════════
+       GIF HERO BACKGROUND
+       ──────────────────────────────────────
+       Put GIFs in:  backgrounds/gifs/
+       Edit GIF_LIST in the <script> below.
+    ══════════════════════════════════════ */
+    #hero-gif {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; z-index: 0;
+      opacity: 0; transition: opacity 1.4s ease;
+    }
+    #hero-gif.loaded { opacity: 1; }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(8,8,16,0.52) 0%,
+        rgba(8,8,16,0.32) 50%,
+        rgba(8,8,16,0.85) 100%);
+      z-index: 1;
+      transition: background 1.2s ease;
+    }
 
+    /* ══════════════════════════════════════
+       PARTICLE CANVASES
+       z-index: 1 so they sit above the plain
+       page background but below content (z-index 2+)
+       Sections are set to background:transparent so
+       particles bleed through from behind.
+    ══════════════════════════════════════ */
+    #stars-bg {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1; pointer-events: none;
+    }
 
+    /* ══════════════════════════════════════
+       NAV — 2-column (brand left | links right)
+       No center title, fully symmetric
+    ══════════════════════════════════════ */
+    .qp-navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 20px 44px;
+      transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+    }
+    .qp-navbar.scrolled {
+      background: rgba(8,8,16,0.86);
+      backdrop-filter: blur(18px);
+      padding: 14px 44px;
+      border-bottom: 1px solid var(--border);
+    }
 
-  </head>
-  <body>    
-  <canvas id="stars-bg" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0;"></canvas>
-  <canvas id="fire-bg" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; display:none;"></canvas>
-  <canvas id="snow-bg" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; display:none;"></canvas>
-  <canvas id="blossom-bg" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; display:none;"></canvas>
-  <!-- Hero section with video background -->
-    <section id="infinite" class="text-white tm-font-big tm-video-bg">
-      <video autoplay muted loop playsinline id="bg-video">
-        <source src="img/background.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <!-- Navigation -->
-      <nav class="navbar navbar-expand-md tm-navbar" id="tmNav">              
-        <div class="container">   
-          <div class="tm-next">
-              <a href="#infinite" class="navbar-brand">Quiet place</a>
-          </div>             
-            
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fas fa-bars navbar-toggler-icon"></i>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link tm-nav-link" href="#infinite">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link tm-nav-link" href="reflections.html">Reflections</a>
-        </li>
-        <!-- <li class="nav-item">
-  <a class="nav-link tm-nav-link" href="moods.html">Moods</a>
-        </li> -->
-        <li class="nav-item">
-          <a class="nav-link tm-nav-link" href="gallery.html">Gallery</a>
-        </li>
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.3s;
+      flex-shrink: 0;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-brand:hover { color: var(--text); }
 
-   <li class="nav-item"> <a class="nav-link tm-nav-link" href="focus.html" onclick="window.location.href='focus.html'; return false;">Focus</a> </li>
-        <li class="nav-item">
-          <a class="nav-link tm-nav-link" href="aboutme.html" onclick="window.location.href='aboutme.html'; return false;">About Me</a>
-        </li>                    
-          <!-- <li class="nav-item">
-            <a class="nav-link tm-nav-link" href="#contact-hero">Contact</a>
-          </li> -->
-            </ul>
-          </div>        
-        </div>
-      </nav>
-      
-      <div class="text-center tm-hero-text-container">
-        <div class="tm-hero-text-container-inner">
-            <h2 class="tm-hero-title">Priyan</h2>
-            <p class="tm-hero-subtitle">
-              <span id="typewriter"></span>
-            </p>
-        </div>        
-      </div>
+    .nav-links {
+      display: flex; align-items: center; gap: 24px;
+    }
+    .nav-links a {
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.3s; white-space: nowrap;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .nexus-link {
+      color: #cfe9ff;
+      text-shadow: 0 0 6px #4db8ff, 0 0 12px rgba(77,184,255,0.5);
+    }
+    .nav-links .nexus-link:hover {
+      text-shadow: 0 0 10px #4db8ff, 0 0 20px rgba(77,184,255,0.8);
+    }
 
-      <div class="tm-next tm-intro-next">
-        <div style="display:flex; justify-content:center; align-items:center; width:100%;">
-          <a href="#whatwedo" class="tm-down-arrow-link" style="display:inline-block;">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
-              <path d="M8 12l8 8 8-8" stroke="#e0e0e0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
-      </div>      
-    </section>
+    /* Hamburger */
+    .nav-hamburger {
+      display: none; background: none; border: none;
+      color: var(--muted); font-size: 1.3rem; cursor: pointer; padding: 4px;
+    }
+    .nav-mobile-menu {
+      display: none; flex-direction: column;
+      background: rgba(8,8,20,0.97); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: fixed; top: 58px; left: 0; right: 0; z-index: 99;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-menu a {
+      font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      padding: 14px 32px; border-bottom: 1px solid var(--border);
+      transition: color 0.3s, background 0.3s;
+    }
+    .nav-mobile-menu a:last-child { border-bottom: none; }
+    .nav-mobile-menu a:hover { color: var(--text); background: var(--surface); }
 
-<!-- <section id="art-wall" class="tm-section-pad-top">
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: block; }
+      .qp-navbar { padding: 16px 20px; }
+      .qp-navbar.scrolled { padding: 12px 20px; }
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    #hero {
+      position: relative; height: 100vh; min-height: 560px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+      /* transparent — particles from fixed canvas show behind */
+      background: transparent;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 0 20px;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 300; letter-spacing: 10px; text-transform: uppercase;
+      color: var(--mood-text); margin: 0 0 16px;
+      text-shadow: 0 0 60px rgba(127,163,255,0.2);
+      animation: hero-fade-in 1.8s ease both;
+      transition: color 0.8s, text-shadow 1s;
+    }
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-style: italic; letter-spacing: 2px;
+      color: var(--mood-muted); margin: 0; min-height: 32px;
+      animation: hero-fade-in 2.4s ease both;
+    }
+    @keyframes hero-fade-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .gif-dots {
+      position: absolute; bottom: 52px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 3; display: flex; gap: 8px;
+    }
+    .gif-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); border: none; cursor: pointer;
+      padding: 0; transition: all 0.3s;
+    }
+    .gif-dot.active { background: var(--accent); box-shadow: 0 0 6px var(--accent2); }
+
+    .hero-arrow {
+      position: absolute; bottom: 26px; left: 50%;
+      transform: translateX(-50%); z-index: 3;
+    }
+    .hero-arrow a { color: var(--muted); display: block; animation: bounce 2.5s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+    /* ══════════════════════════════════════
+       SECTIONS
+    ══════════════════════════════════════ */
+    .qp-section {
+      position: relative; z-index: 2;
+      padding: 90px 0;
+      /* semi-transparent so particles show through */
+      background: rgba(8,8,16,0.72);
+    }
+    .qp-section.alt {
+      background: rgba(12,12,26,0.78);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 400;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--mood-text); margin-bottom: 16px; text-align: center;
+      transition: color 0.8s;
+    }
+    .section-desc {
+      font-size: 1rem; line-height: 1.8; color: var(--mood-muted);
+      text-align: center; max-width: 680px; margin: 0 auto 48px;
+      transition: color 0.8s;
+    }
+    .section-rule {
+      width: 48px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--mood-accent2), transparent);
+      margin: 0 auto 48px; transition: background 1s;
+    }
+
+    /* ══════════════════════════════════════
+       ABOUT
+    ══════════════════════════════════════ */
+    #ritual-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      font-style: italic; line-height: 2;
+      color: var(--mood-muted); text-align: center;
+      max-width: 780px; margin: 0 auto 60px; min-height: 120px;
+      transition: color 0.8s;
+    }
+    .cards-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px; max-width: 1000px; margin: 0 auto 48px;
+    }
+    @media (max-width: 768px) { .cards-row { grid-template-columns: 1fr; } }
+
+    .space-card {
+      padding: 32px 26px; border-radius: var(--radius);
+      background: var(--mood-surface); border: 1px solid var(--mood-border);
+      text-align: center; transition: all 0.4s ease;
+    }
+    .space-card:hover {
+      transform: translateY(-8px);
+      background: var(--surface2);
+      border-color: rgba(127,163,255,0.2);
+    }
+    .space-card h5 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--mood-accent); margin-bottom: 12px; transition: color 0.8s;
+    }
+    .space-card p { font-size: 0.9rem; color: var(--mood-muted); line-height: 1.7; margin: 0; transition: color 0.8s; }
+    .space-card p a { color: var(--mood-accent2); text-decoration: none; }
+    .space-card p a:hover { text-decoration: underline; }
+
+    .offering-btn {
+      display: inline-block; padding: 14px 38px; border-radius: 40px;
+      text-decoration: none; font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; letter-spacing: 2px; color: var(--mood-text);
+      background: rgba(127,163,255,0.08); border: 1px solid rgba(127,163,255,0.2);
+      transition: all 0.4s ease;
+    }
+    .offering-btn:hover {
+      transform: scale(1.06); background: rgba(127,163,255,0.18);
+      color: var(--mood-accent); text-decoration: none;
+    }
+
+    /* ══════════════════════════════════════
+       MOODS SECTION
+    ══════════════════════════════════════ */
+    #moods { position: relative; overflow: hidden; background: rgba(12,12,26,0.78); }
+    .moods-overlay { position: absolute; inset: 0; background: rgba(8,8,20,0.6); z-index: 1; }
+    .moods-content { position: relative; z-index: 2; }
+
+    .mood-btns {
+      display: flex; justify-content: center; gap: 20px; margin-bottom: 32px;
+    }
+    .mood-btn {
+      background: none; border: 2px solid transparent; cursor: pointer;
+      opacity: 0.55; transition: all 0.35s; font-size: 2rem;
+      filter: grayscale(40%); border-radius: 50%;
+      width: 58px; height: 58px; display: flex; align-items: center; justify-content: center;
+    }
+    .mood-btn:hover { opacity: 0.85; transform: scale(1.12); filter: grayscale(0); }
+    .mood-btn.active {
+      opacity: 1; transform: scale(1.18); filter: none;
+      border-color: var(--mood-accent); box-shadow: 0 0 14px var(--mood-accent2);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* Sound indicator (small badge on active mood btn) */
+    .sound-indicator {
+      position: absolute; bottom: -4px; right: -4px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--mood-accent);
+      box-shadow: 0 0 6px var(--mood-accent2);
+      animation: sound-pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes sound-pulse { 0%,100%{transform:scale(1);opacity:0.8} 50%{transform:scale(1.4);opacity:1} }
+
+    .tm-testimonial-item {
+      background: var(--mood-surface) !important;
+      border: 1px solid var(--mood-border) !important;
+      border-radius: var(--radius) !important;
+      padding: 24px 20px !important; margin: 0 8px;
+    }
+    .tm-testimonial-item blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; font-style: italic;
+      color: var(--mood-text) !important; border: none;
+      margin-bottom: 12px; padding: 0;
+    }
+    .tm-testimonial-item figcaption {
+      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--mood-muted) !important;
+    }
+    .explore-btn {
+      display: inline-block; margin-top: 8px;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--mood-accent); text-decoration: none;
+      border: 1px solid rgba(127,163,255,0.25); border-radius: 40px;
+      padding: 10px 24px; background: rgba(127,163,255,0.08); transition: all 0.3s;
+    }
+    .explore-btn:hover { background: rgba(127,163,255,0.18); color: var(--mood-accent); text-decoration: none; }
+
+    /* ══════════════════════════════════════
+       GALLERY — clean, sharp images
+    ══════════════════════════════════════ */
+    #gallery-section { background: rgba(8,8,16,0.72) !important; }
+
+    .tm-gallery-item {
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    /* NO blur, NO filter — plain images */
+    .tm-gallery-item img {
+      opacity: 1;
+      transition: transform 0.4s ease;
+    }
+    .tm-gallery-item:hover img {
+      transform: scale(1.04);
+    }
+
+    /* Simple dark caption, no backdrop-filter blur */
+    .effect-honey figcaption {
+      background: rgba(8,8,20,0.78) !important;
+      backdrop-filter: none !important;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .effect-honey figcaption h2 {
+      color: var(--mood-text) !important;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; font-weight: 400; letter-spacing: 2px;
+    }
+    .effect-honey figcaption h2 span { color: var(--mood-accent) !important; }
+
+    /* ══════════════════════════════════════
+       CONTACT BAND
+    ══════════════════════════════════════ */
+    #contact-band { padding: 80px 0; background: rgba(12,12,26,0.78) !important; }
+    .contact-band-inner { text-align: center; max-width: 640px; margin: 0 auto; padding: 0 24px; }
+    .contact-band-inner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 400;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--mood-text); margin-bottom: 16px; transition: color 0.8s;
+    }
+    .contact-band-inner p { font-size: 1rem; color: var(--mood-muted); line-height: 1.8; margin-bottom: 32px; transition: color 0.8s; }
+    .contact-link {
+      display: inline-block; padding: 14px 38px; border-radius: 40px;
+      text-decoration: none; font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; letter-spacing: 2px; color: var(--mood-text);
+      background: rgba(127,163,255,0.08); border: 1px solid rgba(127,163,255,0.2);
+      transition: all 0.4s;
+    }
+    .contact-link:hover { background: rgba(127,163,255,0.18); color: var(--mood-accent); text-decoration: none; transform: scale(1.05); }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer.qp-footer {
+      background: rgba(8,8,16,0.82) !important;
+      border-top: 1px solid var(--mood-border);
+      padding: 28px 0; text-align: center; transition: border-color 0.8s;
+    }
+    .qp-footer p {
+      font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--mood-muted); margin: 0; transition: color 0.8s;
+    }
+
+    /* Misc overrides */
+    .slick-dots li button:before { color: var(--mood-muted) !important; }
+    .slick-dots li.slick-active button:before { color: var(--mood-accent) !important; }
+    a { color: var(--mood-accent2); }
+    a:hover { color: var(--mood-accent); }
+
+    /* Mood toast notification */
+    #mood-toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(14px);
+      background: rgba(10,10,24,0.95); border: 1px solid var(--mood-border);
+      backdrop-filter: blur(20px); border-radius: 40px;
+      padding: 11px 26px; z-index: 200;
+      font-family: 'Cormorant Garamond', serif; font-size: 1rem; letter-spacing: 1px;
+      color: var(--mood-text); white-space: nowrap;
+      opacity: 0; transition: all 0.5s; pointer-events: none;
+    }
+    #mood-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- Particle canvases (fixed, behind everything) -->
+<!-- Single particle canvas — colour tinted per mood -->
+<canvas id="stars-bg"></canvas>
+
+<!-- Mood ambient sound players -->
+<!--
+  HOW TO ADD SOUNDS:
+  Put your audio files in: bg_sounds/
+  File naming expected (edit MOOD_SOUNDS in JS to change):
+    bg_sounds/night.mp3   — cricket / night ambience
+    bg_sounds/fire.mp3    — crackling fire
+    bg_sounds/snow.mp3    — wind / winter
+    bg_sounds/blossom.mp3 — soft spring / breeze
+  Supported formats: mp3, ogg, wav
+-->
+<audio id="mood-audio" loop preload="none" style="display:none;"></audio>
+
+<!-- Mood change toast -->
+<div id="mood-toast"></div>
+
+<!-- ══════════════════════════════════════
+     NAVBAR — brand left, links right
+══════════════════════════════════════ -->
+<nav class="qp-navbar" id="qpNav">
+  <a href="#hero" class="nav-brand">Quiet <span>Place</span></a>
+
+  <div class="nav-links">
+    <a href="#hero">Home</a>
+    <a href="reflections.html">Reflections</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="focus/focus.html">Focus</a>
+    <a href="aboutme.html">About Me</a>
+    <!-- <a href="#" class="nexus-link" onclick="window.open('https://discord.gg/SNhzuKCvhw','_blank');return false;">Join The Nexus</a> -->
+  </div>
+
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+    <i class="fas fa-bars"></i>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#hero" onclick="closeMobileMenu()">Home</a>
+  <a href="reflections.html">Reflections</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="focus/focus.html">Focus</a>
+  <a href="aboutme.html">About Me</a>
+  <!-- <a href="#" onclick="window.open('https://discord.gg/SNhzuKCvhw','_blank');closeMobileMenu();return false;" style="color:#cfe9ff;">Join The Nexus</a> -->
+</div>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <img id="hero-gif" src="" alt="" aria-hidden="true">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <h1 class="hero-title">Priyan</h1>
+    <p class="hero-subtitle"><span id="typewriter"></span></p>
+  </div>
+
+  <div class="gif-dots" id="gif-dots"></div>
+
+  <div class="hero-arrow">
+    <a href="#about-space">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+        <path d="M8 12l8 8 8-8" stroke="rgba(232,234,240,0.5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     ABOUT / WHAT IS QUIET PLACE
+══════════════════════════════════════ -->
+<section class="qp-section" id="about-space">
   <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        
-        <h2 class="tm-text-primary mb-4 tm-section-title">
-          A Shared Art Wall
-        </h2>
+    <h2 class="section-title">What Is Quiet Place?</h2>
+    <div class="section-rule"></div>
+    <p id="ritual-text"></p>
 
-        <p class="mx-auto tm-section-desc" style="max-width: 750px; font-size: 1.1rem; line-height: 1.7;">
-          Think of this as a shared art wall. <br><br>
-          Your images become part of the 
-          <a href="gallery.html" style="text-decoration: underline;">Gallery</a>. <br>
-          Your words become part of our 
-          <a href="reflections.html" style="text-decoration: underline;">Reflections</a>.
-        </p>
-
+    <div class="cards-row">
+      <div class="space-card">
+        <h5>Share</h5>
+        <p>Leave an image, memory, or reflection that mattered to you.</p>
       </div>
+      <div class="space-card">
+        <h5>It Lives Here</h5>
+        <p>Your submission gently becomes part of the
+          <a href="gallery.html">Gallery</a> or <a href="reflections.html">Reflections</a>.
+        </p>
+      </div>
+      <div class="space-card">
+        <h5>Others Discover</h5>
+        <p>Someone, somewhere, may pause and find meaning in what you shared.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <a href="quotes.html" class="offering-btn">Begin Your Offering</a>
     </div>
   </div>
-</section> -->
+</section>
 
-   <section id="about-space" class="tm-section-pad-top">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
+<!-- ══════════════════════════════════════
+     MOODS
+══════════════════════════════════════ -->
+<section class="qp-section alt" id="moods">
+  <div class="moods-overlay"></div>
+  <div class="container moods-content">
+    <h2 class="section-title">Moods</h2>
+    <div class="section-rule"></div>
+    <p class="section-desc">Fleeting states of mind, captured in fragments.<br>
+      <small style="font-size:0.75rem; opacity:0.5; letter-spacing:1px;">Click a mood to change the atmosphere</small>
+    </p>
 
-        <h2 class="tm-text-primary mb-4 tm-section-title">
-          What Is Quiet Place?
-        </h2>
-
-        <!-- Typewriter Text Appears Here -->
-        <p id="ritual-text" class="mx-auto" style="max-width: 850px;"></p>
-
+    <div class="mood-btns">
+      <div style="position:relative; display:inline-block;">
+        <button class="mood-btn active" data-mood="night" title="Night">🌙</button>
+      </div>
+      <div style="position:relative; display:inline-block;">
+        <button class="mood-btn" data-mood="fire" title="Fire">🔥</button>
+      </div>
+      <div style="position:relative; display:inline-block;">
+        <button class="mood-btn" data-mood="snow" title="Snow">❄️</button>
+      </div>
+      <div style="position:relative; display:inline-block;">
+        <button class="mood-btn" data-mood="blossom" title="Blossom">🌸</button>
       </div>
     </div>
 
-    <div class="row mt-5 text-center">
-
-      <div class="col-md-4">
-        <div class="space-card">
-          <div class="space-icon"></div>
-          <h5 class="tm-text-primary mb-3">Share</h5>
-          <p>Leave an image, memory, or reflection that mattered to you.</p>
-        </div>
+    <div class="mx-auto tm-gallery-container tm-gallery-container-2">
+      <div class="tm-testimonials-carousel">
+        <figure class="tm-testimonial-item">
+          <blockquote>🌙 Calm Night — when silence becomes a friend.</blockquote>
+          <figcaption>Quiet</figcaption>
+        </figure>
+        <figure class="tm-testimonial-item">
+          <blockquote>🔥 Ember — warmth that lingers after the flame.</blockquote>
+          <figcaption>Fierce</figcaption>
+        </figure>
+        <figure class="tm-testimonial-item">
+          <blockquote>❄️ Snow — Stillness speaks in cold whispers.</blockquote>
+          <figcaption>Silent</figcaption>
+        </figure>
+        <figure class="tm-testimonial-item">
+          <blockquote>🌸 Blossom — Every petal is a fleeting thought.</blockquote>
+          <figcaption>Gentle</figcaption>
+        </figure>
+        <!-- <figure class="tm-testimonial-item">
+          <blockquote>🌸 Blossom — Every petal is a fleeting thought.</blockquote>
+          <figcaption>Gentle</figcaption>
+        </figure> -->
+   
       </div>
-
-      <div class="col-md-4">
-        <div class="space-card">
-          <div class="space-icon"></div>
-          <h5 class="tm-text-primary mb-3">It Lives Here</h5>
-          <p>Your submission gently becomes part of the 
-            <a href="gallery.html">Gallery</a> or 
-            <a href="reflections.html">Reflections</a>.
-          </p>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="space-card">
-          <div class="space-icon"></div>
-          <h5 class="tm-text-primary mb-3">Others Discover</h5>
-          <p>Someone, somewhere, may pause and find meaning in what you shared.</p>
-        </div>
-      </div>
-
     </div>
 
-    <div class="row mt-5">
-      <div class="col-lg-12 text-center">
-        <p style="opacity:0.7; font-size:0.95rem;">
-          <!-- Submissions are reviewed gently before becoming part of the space. -->
-        </p>
+    <div style="text-align:center; margin-top:32px;">
+      <a href="moods.html" class="explore-btn">Explore More →</a>
+    </div>
+  </div>
+</section>
 
-        <a href="quotes.html" class="share-ritual-btn">
-          Begin Your Offering
+<!-- ══════════════════════════════════════
+     GALLERY
+══════════════════════════════════════ -->
+<section class="qp-section" id="gallery-section">
+  <div class="container tm-container-gallery">
+    <h2 class="section-title">Gallery</h2>
+    <div class="section-rule"></div>
+    <p class="section-desc">Not everything can be said with words. Some things live here.</p>
+
+    <div class="mx-auto tm-gallery-container">
+      <div class="grid tm-gallery">
+        <a href="img/gallery-img-01.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-01.jpg" alt="Image 1" class="img-fluid">
+            <figcaption><h2><i>Physical Health <span>Exercise!</span></i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-02.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-02.jpg" alt="Image 2" class="img-fluid">
+            <figcaption><h2><i>Rain on Glass <span>Second Image</span></i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-03.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-03.jpg" alt="Image 3" class="img-fluid">
+            <figcaption><h2><i><span>Sea View</span> Mega City</i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-04.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-04.jpg" alt="Image 4" class="img-fluid">
+            <figcaption><h2><i>Dream Girl <span>Thoughts</span></i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-05.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-05.jpg" alt="Image 5" class="img-fluid">
+            <figcaption><h2><i><span>Workstation</span> Offices</i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-06.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-06.jpg" alt="Image 6" class="img-fluid">
+            <figcaption><h2><i>Just Above <span>The City</span></i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-01.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-01.jpg" alt="Image 7" class="img-fluid">
+            <figcaption><h2><i>Another <span>Exercise Time</span></i></h2></figcaption>
+          </figure>
+        </a>
+        <a href="img/gallery-img-02.jpg">
+          <figure class="effect-honey tm-gallery-item">
+            <img src="img/gallery-tn-02.jpg" alt="Image 8" class="img-fluid">
+            <figcaption><h2><i>Repeated <span>Image Spot</span></i></h2></figcaption>
+          </figure>
         </a>
       </div>
     </div>
-
   </div>
 </section>
 
+<!-- ══════════════════════════════════════
+     SHARE YOUR VOICE
+══════════════════════════════════════ -->
+<section class="qp-section alt" id="contact-band">
+  <div class="contact-band-inner">
+    <h2>Share Your Voice</h2>
+    <p>Got an idea, story, or just want to say hi?<br>Leave your name, email, and message — it'll go straight into my system.</p>
+    <a href="quotes.html" class="contact-link">Leave a Message</a>
   </div>
 </section>
 
-   
-
-    <!-- Soft Moderation Note -->
-    <!-- <div class="row mt-5">
-      <div class="col-lg-12 text-center">
-        <p style="opacity: 0.7; font-size: 0.95rem;">
-          Submissions are reviewed gently before becoming part of the space.
-        </p>
-      </div>
-    </div>
-
-  </div> -->
-</section>
-
-
- <section id="moods" class="tm-section-pad-top tm-parallax-2" style="position:relative; overflow:hidden;">
-  <!-- Background video -->
-  <video autoplay muted loop playsinline id="bg-video-moods"
-    style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1;">
-    <source src="img/background1.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-
-  <!-- Content overlay -->
-  <div class="container tm-testimonials-content" style="position:relative; z-index:2;">
-    <div class="row">
-      <div class="col-lg-12 tm-content-box text-center">
-        
-        <h2 class="text-white mb-4 tm-section-title">Moods</h2>
-        <p class="mx-auto tm-section-desc text-center text-light">
-          Fleeting states of mind, captured in fragments.
-        </p>
-
-        <!-- Mood Selector -->
-        <div id="mood-selector" style="margin: 2rem 0 1.5rem 0; display: flex; justify-content: center; gap: 1.5rem; font-size: 2.2rem;">
-          <button class="mood-btn" data-mood="night" title="Night" style="background:none;border:none;cursor:pointer;outline:none;">🌙</button>
-          <button class="mood-btn" data-mood="fire" title="Fire" style="background:none;border:none;cursor:pointer;outline:none;">🔥</button>
-          <button class="mood-btn" data-mood="snow" title="Snow" style="background:none;border:none;cursor:pointer;outline:none;">❄️</button>
-          <button class="mood-btn" data-mood="blossom" title="Blossom" style="background:none;border:none;cursor:pointer;outline:none;">🌸</button>
-        </div>
-
-        <!-- Carousel -->
-        <div class="mx-auto tm-gallery-container tm-gallery-container-2">
-          <div class="tm-testimonials-carousel">
-
-            <figure class="tm-testimonial-item" style="background:rgba(0,0,0,0.4); border-radius:8px; padding:1rem;">
-              <blockquote class="text-light">🌙 Calm Night ~ when silence becomes a friend.</blockquote>
-              <figcaption class="text-light">Quiet</figcaption>
-            </figure>
-
-            <figure class="tm-testimonial-item" style="background:rgba(0,0,0,0.4); border-radius:8px; padding:1rem;">
-              <blockquote class="text-light">🔥 Ember ~ warmth that lingers after the flame.</blockquote>
-              <figcaption class="text-light">Fierce</figcaption>
-            </figure>
-
-            <figure class="tm-testimonial-item" style="background:rgba(0,0,0,0.4); border-radius:8px; padding:1rem;">
-              <blockquote class="text-light">❄️ Snow ~ Stillness speaks in cold whispers.</blockquote>
-              <figcaption class="text-light">Silent</figcaption>
-            </figure>
-
-            <figure class="tm-testimonial-item" style="background:rgba(0,0,0,0.4); border-radius:8px; padding:1rem;">
-              <blockquote class="text-light">🌸 Blossom ~ Every petal is a fleeting thought.</blockquote>
-              <figcaption class="text-light">Gentle</figcaption>
-            </figure>
-
-            <figure class="tm-testimonial-item" style="background:rgba(0,0,0,0.4); border-radius:8px; padding:1rem;">
-              <blockquote class="text-light">🍃 Breeze ~ motion without noise.</blockquote>
-              <figcaption class="text-light">Air</figcaption>
-            </figure>
-
-          </div>
-        </div>
-
-        <!-- Button -->
-        <div class="mt-4">
-          <a href="moods.html" class="btn btn-primary btn-lg">Explore More →</a>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-    
-    <section id="gallery" class="tm-section-pad-top">
-      <div class="container tm-container-gallery">
-        <div class="row">
-          <div class="text-center col-12">
-              <h2 class="tm-text-primary tm-section-title mb-4">Gallery</h2>
-              <p class="mx-auto tm-section-desc">
-                Not everything can be said with words. Some things live here.
-              </p>
-          </div>            
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="mx-auto tm-gallery-container">
-                    <div class="grid tm-gallery">
-                      <a href="img/gallery-img-01.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-01.jpg" alt="Image 1" class="img-fluid">
-                          <figcaption>
-                            <h2><i>Physical Health <span>Exercise!</span></i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-02.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-02.jpg" alt="Image 2" class="img-fluid">
-                          <figcaption>
-                            <h2><i>Rain on Glass <span>Second Image</span></i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-03.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-03.jpg" alt="Image 3" class="img-fluid">
-                          <figcaption>
-                            <h2><i><span>Sea View</span> Mega City</i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-04.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-04.jpg" alt="Image 4" class="img-fluid">
-                          <figcaption>
-                            <h2><i>Dream Girl <span>Thoughts</span></i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-05.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-05.jpg" alt="Image 5" class="img-fluid">
-                          <figcaption>
-                            <h2><i><span>Workstation</span> Offices</i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-06.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-06.jpg" alt="Image 6" class="img-fluid">
-                          <figcaption>
-                            <h2><i>Just Above <span>The City</span></i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-01.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-01.jpg" alt="Image 7" class="img-fluid">
-                          <figcaption>
-                            <h2><i>Another <span>Exercise Time</span></i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                      <a href="img/gallery-img-02.jpg">
-                        <figure class="effect-honey tm-gallery-item">
-                          <img src="img/gallery-tn-02.jpg" alt="Image 8" class="img-fluid">
-                          <figcaption>
-                            <h2><i>Repeated <span>Image Spot</span></i></h2>
-                          </figcaption>
-                        </figure>
-                      </a>
-                    </div>
-                </div>                
-            </div>        
-          </div>
-      </div>
-    </section>
-
-   <!-- Landing / Hero Section -->
-<!-- Hero Section -->
-<section id="contact-hero" class="hero bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-24 text-center" style="position:relative; z-index:20;">
-  <div class="container mx-auto px-6" style="position:relative; z-index:21;">
-    <h1 class="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg">
-      Share Your Voice
-    </h1>
-    <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
-      Got an idea, story, or just want to say hi? 
-      <br>Leave your name, email, and message ~ it’ll go straight into my system.
-    </p>
-  <a href="quotes.html" style="color:inherit; text-decoration:underline; font-weight:500; display:inline-block; margin-bottom: 60px;">Leave a message</a>
-</section>
-
-
-
-
-
-  </div>
-</section>
-
-<footer class="custom-footer text-center mt-5">
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer class="qp-footer">
   <div class="container">
-    <p class="footer-main mb-1">&copy; ✦ Quiet Place · 2025 ✦ All rights reserved.</p>
-    
-  
+    <p>&copy; ✦ Quiet Place · 2025 ✦ All rights reserved.</p>
   </div>
 </footer>
 
+<!-- ══════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════ -->
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="slick/slick.min.js"></script>
+<script src="magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="js/easing.min.js"></script>
 
+<script>
+/* ══════════════════════════════════════════════
+   GIF HERO CONFIG
+   Put files in:  backgrounds/gifs/
+   ─────────────────────────────────────────────
+   const GIF_LIST = ['rain-window.gif', 'lofi-room.gif'];
+══════════════════════════════════════════════ */
+const GIF_LIST     = ['night.gif'];           // add your .gif filenames here
+const GIF_BASE     = 'backgrounds/gifs/';
+const GIF_INTERVAL = 12000;
 
-          </div>
-       
+let currentGif = 0;
+const heroGif  = document.getElementById('hero-gif');
+const gifDots  = document.getElementById('gif-dots');
 
-    </section>
-    
-    <script src="js/jquery-1.9.1.min.js"></script>     
-    <script src="slick/slick.min.js"></script>
-    <script src="magnific-popup/jquery.magnific-popup.min.js"></script>
-    <script src="js/easing.min.js"></script>
-    <script src="js/jquery.singlePageNav.min.js"></script>     
-    <script src="js/bootstrap.min.js"></script> 
+function loadGif(idx) {
+  if (!GIF_LIST.length) return;
+  currentGif = ((idx % GIF_LIST.length) + GIF_LIST.length) % GIF_LIST.length;
+  heroGif.classList.remove('loaded');
+  heroGif.onload = () => heroGif.classList.add('loaded');
+  heroGif.src = GIF_BASE + GIF_LIST[currentGif];
+  document.querySelectorAll('.gif-dot').forEach((d,i) => d.classList.toggle('active', i===currentGif));
+}
+function buildGifDots() {
+  if (GIF_LIST.length <= 1) return;
+  GIF_LIST.forEach((_,i) => {
+    const d = document.createElement('button');
+    d.className = 'gif-dot' + (i===0?' active':'');
+    d.onclick = () => { loadGif(i); resetTimer(); };
+    gifDots.appendChild(d);
+  });
+}
+let gifTimer = null;
+function resetTimer() {
+  clearInterval(gifTimer);
+  if (GIF_INTERVAL > 0 && GIF_LIST.length > 1)
+    gifTimer = setInterval(() => loadGif(currentGif+1), GIF_INTERVAL);
+}
+buildGifDots(); loadGif(0); resetTimer();
 
-    <!-- Typewriter effect -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        var text = "Reflections • Silence • Fire • Shadows • Light";
-        var i = 0;
-        var speed = 70;
-        var el = document.getElementById("typewriter");
-        function typeWriter() {
-          if (i < text.length) {
-            el.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, speed);
-          }
-        }
-        typeWriter();
-      });
-
-      document.addEventListener("DOMContentLoaded", function() {
-  const ritualText = 
-  "Quiet Place is a shared art wall and a quiet archive of human moments.\n" +
-  "A space where you may remain anonymous, share something meaningful, " +
-  "and let it live gently in public.\n" +
-  "This is a community of quiet minds — not loud feeds.";
-
+/* ══════════════════════════════════════════════
+   TYPEWRITER
+══════════════════════════════════════════════ */
+(function(){
+  const text = "A quiet archive of human moments";
   let i = 0;
-  let speed = 65;
-  const el = document.getElementById("ritual-text");
+  const el = document.getElementById('typewriter');
+  function type() { if(i<text.length){ el.textContent+=text[i++]; setTimeout(type,65); } }
+  setTimeout(type, 700);
+})();
 
+(function(){
+  const ritualText =
+    "Quiet Place is a shared art wall and a quiet archive of human moments.\n" +
+    "A space where you may remain anonymous, share something meaningful, " +
+    "and let it live gently in public.\n" +
+    "This is a community of quiet minds — not loud feeds.";
+  let i=0, started=false;
+  const el = document.getElementById('ritual-text');
   function typeEffect() {
-    if (i < ritualText.length) {
-      if (ritualText.charAt(i) === "\n") {
-        el.innerHTML += "<br><br>";
-      } else {
-        el.innerHTML += ritualText.charAt(i);
-      }
-      i++;
-      setTimeout(typeEffect, speed);
+    if(i<ritualText.length){
+      el.innerHTML += ritualText[i]==='\n' ? '<br><br>' : ritualText[i];
+      i++; setTimeout(typeEffect, 52);
     }
   }
+  const obs = new IntersectionObserver(e => {
+    if(e[0].isIntersecting && !started){ started=true; typeEffect(); obs.disconnect(); }
+  });
+  obs.observe(el);
+})();
 
-  // Trigger when section scrolls into view
-  const observer = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      typeEffect();
-      observer.disconnect();
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('qpNav').classList.toggle('scrolled', window.scrollY > 60);
+});
+function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+function closeMobileMenu()  { document.getElementById('mobileMenu').classList.remove('open'); }
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const h = a.getAttribute('href');
+    if(h.length>1){ const t=document.querySelector(h); if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); } }
+  });
+});
+
+/* ══════════════════════════════════════════════
+   MOOD SYSTEM
+   ─────────────────────────────────────────────
+   SOUND FILES — place in bg_sounds/ folder:
+     bg_sounds/night.mp3    (cricket / night sounds)
+     bg_sounds/fire.mp3     (crackling fire)
+     bg_sounds/snow.mp3     (wind / winter silence)
+     bg_sounds/blossom.mp3  (soft spring breeze)
+
+   Set SOUND_VOLUME below (0.0 – 1.0)
+   Set SOUND_ENABLED = false to disable sounds entirely
+══════════════════════════════════════════════ */
+const SOUND_ENABLED = false;
+const SOUND_VOLUME  = 0.35;
+const SOUND_FOLDER  = 'bg_sounds/';
+
+// ── Mood definitions ──────────────────────────
+const MOODS = {
+  night: {
+    label: '🌙 Night',
+    toast: '🌙 Night falls. The crickets begin.',
+    sound: 'night_ting.mp3',
+    vars: {
+      '--mood-bg':      '#080810',
+      '--mood-bg2':     '#0c0c1a',
+      '--mood-accent':  '#b6c8ff',
+      '--mood-accent2': '#7fa3ff',
+      '--mood-text':    '#e8eaf0',
+      '--mood-muted':   'rgba(232,234,240,0.48)',
+      '--mood-border':  'rgba(255,255,255,0.08)',
+      '--mood-surface': 'rgba(255,255,255,0.04)',
     }
+  },
+  fire: {
+    label: '🔥 Fire',
+    toast: '🔥 The embers glow. Stay warm.',
+    sound: 'fire_ting.mp3',
+    vars: {
+      '--mood-bg':      '#120808',
+      '--mood-bg2':     '#1c0f08',
+      '--mood-accent':  '#ffb347',
+      '--mood-accent2': '#e07020',
+      '--mood-text':    '#fff3e0',
+      '--mood-muted':   'rgba(255,235,200,0.48)',
+      '--mood-border':  'rgba(255,150,60,0.12)',
+      '--mood-surface': 'rgba(255,120,30,0.06)',
+    }
+  },
+  snow: {
+    label: '❄️ Snow',
+    toast: '❄️ Stillness settles like snow.',
+    sound: 'snow_ting.mp3',
+    vars: {
+      '--mood-bg':      '#08101a',
+      '--mood-bg2':     '#0d1824',
+      '--mood-accent':  '#a8d8ff',
+      '--mood-accent2': '#6ab4f0',
+      '--mood-text':    '#ddeeff',
+      '--mood-muted':   'rgba(200,224,255,0.48)',
+      '--mood-border':  'rgba(160,210,255,0.10)',
+      '--mood-surface': 'rgba(140,200,255,0.05)',
+    }
+  },
+  blossom: {
+    label: '🌸 Blossom',
+    toast: '🌸 Petals drift. The air is sweet.',
+    sound: 'blossom_ting.mp3',
+    vars: {
+      '--mood-bg':      '#120810',
+      '--mood-bg2':     '#1a0d18',
+      '--mood-accent':  '#ffb6d9',
+      '--mood-accent2': '#e07aad',
+      '--mood-text':    '#ffe8f4',
+      '--mood-muted':   'rgba(255,210,235,0.48)',
+      '--mood-border':  'rgba(255,160,200,0.10)',
+      '--mood-surface': 'rgba(255,130,180,0.05)',
+    }
+  }
+};
+
+let currentMood = 'night';
+let soundFading  = false;
+const moodAudio  = document.getElementById('mood-audio');
+let soundIndicator = null;
+
+function applyMoodVars(mood) {
+  const vars = MOODS[mood].vars;
+  const root = document.documentElement;
+  for (const [k, v] of Object.entries(vars)) root.style.setProperty(k, v);
+}
+
+function showMoodToast(msg) {
+  const t = document.getElementById('mood-toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function playMoodSound(mood) {
+  if (!SOUND_ENABLED) return;
+  const file = SOUND_FOLDER + MOODS[mood].sound;
+  if (soundFading) return;
+
+  if (!moodAudio.paused && moodAudio.src.endsWith(MOODS[mood].sound)) return;
+
+  // Fade out current sound
+  soundFading = true;
+  const fadeOut = setInterval(() => {
+    if (moodAudio.volume > 0.04) {
+      moodAudio.volume = Math.max(0, moodAudio.volume - 0.04);
+    } else {
+      clearInterval(fadeOut);
+      moodAudio.pause();
+      moodAudio.currentTime = 0;
+      moodAudio.src = file;
+      moodAudio.volume = 0;
+      const playPromise = moodAudio.play();
+      if (playPromise) playPromise.catch(() => {}); // handle autoplay block silently
+      // Fade in
+      const fadeIn = setInterval(() => {
+        if (moodAudio.volume < SOUND_VOLUME - 0.04) {
+          moodAudio.volume = Math.min(SOUND_VOLUME, moodAudio.volume + 0.03);
+        } else {
+          moodAudio.volume = SOUND_VOLUME;
+          clearInterval(fadeIn);
+          soundFading = false;
+        }
+      }, 80);
+    }
+  }, 60);
+}
+
+function updateSoundIndicator(mood) {
+  // Remove old indicator
+  document.querySelectorAll('.sound-indicator').forEach(el => el.remove());
+  if (!SOUND_ENABLED) return;
+  const activeBtn = document.querySelector(`.mood-btn[data-mood="${mood}"]`);
+  if (!activeBtn) return;
+  const ind = document.createElement('span');
+  ind.className = 'sound-indicator';
+  activeBtn.parentElement.appendChild(ind);
+}
+
+function setMood(mood) {
+  if (!(mood in MOODS)) return;
+  currentMood = mood;
+
+  // 1. Tint the star particles to the mood colour
+  starColor = MOOD_STAR_COLOR[mood];
+
+  // 2. CSS custom properties (colors bleed over entire page)
+  applyMoodVars(mood);
+
+  // 3. Active button styling
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.toggle('active', b.dataset.mood === mood));
+
+  // 4. Sound
+  playMoodSound(mood);
+  updateSoundIndicator(mood);
+
+  // 5. Toast
+  showMoodToast(MOODS[mood].toast);
+}
+
+// Init mood buttons
+document.querySelectorAll('.mood-btn').forEach(btn => {
+  btn.addEventListener('click', () => setMood(btn.dataset.mood));
+});
+
+// Apply default (night) without sound on first load
+applyMoodVars('night');
+// Stars default visible already via CSS
+
+/* ══════════════════════════════════════════════
+   PARTICLE SYSTEM — single star canvas, tinted per mood
+══════════════════════════════════════════════ */
+const starsCanvas = document.getElementById('stars-bg');
+
+function resizeAll() {
+  starsCanvas.width  = window.innerWidth;
+  starsCanvas.height = window.innerHeight;
+}
+resizeAll();
+window.addEventListener('resize', resizeAll);
+
+// Star colour is driven by the current mood accent
+const MOOD_STAR_COLOR = {
+  night:   [182, 200, 255],   // blue-white
+  fire:    [255, 160,  60],   // warm orange
+  snow:    [180, 220, 255],   // icy blue
+  blossom: [255, 170, 210],   // pink
+};
+let starColor = MOOD_STAR_COLOR.night;
+
+let stars = [], STAR_COUNT = 90;
+function initStars() {
+  stars = [];
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x:  Math.random() * starsCanvas.width,
+      y:  Math.random() * starsCanvas.height,
+      r:  Math.random() * 1.2 + 0.4,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: (Math.random() - 0.5) * 0.2,
+      tw: Math.random() * Math.PI * 2,
+    });
+  }
+}
+initStars();
+window.addEventListener('resize', initStars);
+
+(function animateStars() {
+  const ctx = starsCanvas.getContext('2d');
+  ctx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+  const [r, g, b] = starColor;
+  for (const s of stars) {
+    s.x += s.dx; s.y += s.dy; s.tw += 0.045;
+    if (s.x < 0) s.x = starsCanvas.width;
+    if (s.x > starsCanvas.width) s.x = 0;
+    if (s.y < 0) s.y = starsCanvas.height;
+    if (s.y > starsCanvas.height) s.y = 0;
+    const a = 0.5 + 0.4 * Math.sin(s.tw);
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
+    ctx.shadowColor = `rgba(${r},${g},${b},0.7)`;
+    ctx.shadowBlur = 6; ctx.fill(); ctx.shadowBlur = 0;
+  }
+  requestAnimationFrame(animateStars);
+})();
+
+// Click burst
+starsCanvas.addEventListener('click', e => {
+  const rc = starsCanvas.getBoundingClientRect();
+  for (let i = 0; i < 20; i++) {
+    const angle = (Math.PI * 2) * (i / 20), sp = 1.2 + Math.random() * 1.8;
+    stars.push({
+      x: e.clientX - rc.left, y: e.clientY - rc.top,
+      r: Math.random() * 1.5 + 0.7,
+      dx: Math.cos(angle) * sp, dy: Math.sin(angle) * sp,
+      tw: Math.random() * Math.PI * 2, burstLife: 0,
+    });
+  }
+});
+(function cleanBurst() {
+  for (let i = stars.length - 1; i >= STAR_COUNT; i--) {
+    if (stars[i].burstLife !== undefined) {
+      stars[i].burstLife++;
+      if (stars[i].burstLife > 60) stars.splice(i, 1);
+    }
+  }
+  requestAnimationFrame(cleanBurst);
+})();
+
+/* ══════════════════════════════════════════════
+   JQUERY — carousels + gallery popup
+══════════════════════════════════════════════ */
+$(function(){
+  $('.tm-gallery').magnificPopup({delegate:'a',type:'image',gallery:{enabled:true}});
+
+  $('.tm-testimonials-carousel').slick({
+    dots:true, prevArrow:false, nextArrow:false, infinite:true, slidesToShow:3, slidesToScroll:1,
+    responsive:[
+      {breakpoint:992,settings:{slidesToShow:2}},
+      {breakpoint:768,settings:{slidesToShow:2}},
+      {breakpoint:480,settings:{slidesToShow:1}}
+    ]
   });
 
-  observer.observe(el);
+  $('.tm-gallery').slick({
+    dots:true, infinite:false, slidesToShow:5, slidesToScroll:2,
+    responsive:[
+      {breakpoint:1199,settings:{slidesToShow:4,slidesToScroll:2}},
+      {breakpoint:991,settings:{slidesToShow:3,slidesToScroll:2}},
+      {breakpoint:767,settings:{slidesToShow:2,slidesToScroll:1}},
+      {breakpoint:480,settings:{slidesToShow:1,slidesToScroll:1}}
+    ]
+  });
 });
-    </script>
-
-    <!-- Floating stars/particles background -->
-    <script>
-    // --- MOOD PARTICLE BACKGROUNDS ---
-    // Canvas references
-    const starsCanvas = document.getElementById('stars-bg');
-    const fireCanvas = document.getElementById('fire-bg');
-    const snowCanvas = document.getElementById('snow-bg');
-    const blossomCanvas = document.getElementById('blossom-bg');
-
-    // Set all canvas sizes
-    function resizeAllCanvases() {
-      [starsCanvas, fireCanvas, snowCanvas, blossomCanvas].forEach(c => {
-        c.width = window.innerWidth;
-        c.height = window.innerHeight;
-      });
-    }
-    resizeAllCanvases();
-    window.addEventListener('resize', resizeAllCanvases);
-
-    // --- STARS (NIGHT) ---
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-    let STAR_COUNT = 90;
-    let stars = [];
-    function initStars() {
-      w = window.innerWidth;
-      h = window.innerHeight;
-      stars = [];
-      for (let i = 0; i < STAR_COUNT; i++) {
-        stars.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r: Math.random() * 1.2 + 0.5,
-          dx: (Math.random() - 0.5) * 0.2,
-          dy: (Math.random() - 0.5) * 0.2,
-          twinkle: Math.random() * Math.PI * 2
-        });
-      }
-    }
-    initStars();
-    window.addEventListener('resize', initStars);
-    function animateStars() {
-      const ctx = starsCanvas.getContext('2d');
-      ctx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
-      for (let s of stars) {
-        s.x += s.dx;
-        s.y += s.dy;
-        if (s.x < 0) s.x = w;
-        if (s.x > w) s.x = 0;
-        if (s.y < 0) s.y = h;
-        if (s.y > h) s.y = 0;
-        s.twinkle += 0.05;
-        let alpha = 0.7 + 0.3 * Math.sin(s.twinkle);
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-        ctx.shadowColor = '#fff';
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-      requestAnimationFrame(animateStars);
-    }
-    animateStars();
-    // Burst of stars on click
-    starsCanvas.addEventListener('click', function(e) {
-      const rect = starsCanvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const burstCount = 18 + Math.floor(Math.random() * 8);
-      for (let i = 0; i < burstCount; i++) {
-        const angle = (Math.PI * 2) * (i / burstCount);
-        const speed = 1.2 + Math.random() * 1.8;
-        stars.push({
-          x: x,
-          y: y,
-          r: Math.random() * 1.5 + 0.8,
-          dx: Math.cos(angle) * speed,
-          dy: Math.sin(angle) * speed,
-          twinkle: Math.random() * Math.PI * 2,
-          burstLife: 0
-        });
-      }
-    });
-    // Remove burst stars after a while
-    function cleanBurstStars() {
-      for (let i = stars.length - 1; i >= STAR_COUNT; i--) {
-        if (stars[i].burstLife !== undefined) {
-          stars[i].burstLife++;
-          if (stars[i].burstLife > 60) {
-            stars.splice(i, 1);
-          }
-        }
-      }
-      requestAnimationFrame(cleanBurstStars);
-    }
-    cleanBurstStars();
-
-    // --- FIRE ---
-    let fireParticles = [];
-    function initFire() {
-      fireParticles = [];
-      for (let i = 0; i < 60; i++) {
-        fireParticles.push({
-          x: Math.random() * fireCanvas.width,
-          y: fireCanvas.height - 10 - Math.random() * 40,
-          r: Math.random() * 2.2 + 1.2,
-          dx: (Math.random() - 0.5) * 0.5,
-          dy: -Math.random() * 1.5 - 0.5,
-          alpha: 0.7 + Math.random() * 0.3,
-          color: `rgba(${220+Math.floor(Math.random()*35)},${80+Math.floor(Math.random()*60)},0,` // orange/yellow
-        });
-      }
-    }
-    function animateFire() {
-      const ctx = fireCanvas.getContext('2d');
-      ctx.clearRect(0, 0, fireCanvas.width, fireCanvas.height);
-      for (let p of fireParticles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.color + p.alpha + ")";
-        ctx.shadowColor = '#ffae42';
-        ctx.shadowBlur = 12;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        p.x += p.dx;
-        p.y += p.dy;
-        p.alpha -= 0.008 + Math.random() * 0.01;
-        if (p.alpha <= 0.1 || p.y < 0) {
-          // respawn at bottom
-          p.x = Math.random() * fireCanvas.width;
-          p.y = fireCanvas.height - 10 - Math.random() * 40;
-          p.r = Math.random() * 2.2 + 1.2;
-          p.dx = (Math.random() - 0.5) * 0.5;
-          p.dy = -Math.random() * 1.5 - 0.5;
-          p.alpha = 0.7 + Math.random() * 0.3;
-        }
-      }
-      requestAnimationFrame(animateFire);
-    }
-    initFire();
-    animateFire();
-
-    // --- SNOW ---
-    // SVG snowflake path (simple 6-arm)
-    function drawSVGFlake(ctx, x, y, r, alpha) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(r / 12, r / 12);
-      ctx.globalAlpha = alpha;
-      ctx.strokeStyle = '#e0f7fa';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) {
-        ctx.moveTo(0, 0);
-        ctx.lineTo(10, 0);
-        ctx.moveTo(7, 0);
-        ctx.lineTo(7.5, 2);
-        ctx.moveTo(7, 0);
-        ctx.lineTo(7.5, -2);
-        ctx.rotate(Math.PI / 3);
-      }
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    }
-    let snowflakes = [];
-    function initSnow() {
-      snowflakes = [];
-      for (let i = 0; i < 70; i++) {
-        // 40% SVG snowflakes, 60% soft circles
-        const isSVG = Math.random() < 0.4;
-        snowflakes.push({
-          x: Math.random() * snowCanvas.width,
-          y: Math.random() * snowCanvas.height,
-          r: isSVG ? (Math.random() * 7 + 7) : (Math.random() * 2 + 1.5),
-          dx: (Math.random() - 0.5) * 0.5, // more horizontal drift
-          dy: 0.5 + Math.random() * 0.7,
-          alpha: 0.6 + Math.random() * 0.4,
-          isSVG
-        });
-      }
-    }
-    function animateSnow() {
-      const ctx = snowCanvas.getContext('2d');
-      ctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
-      for (let f of snowflakes) {
-        if (f.isSVG) {
-          drawSVGFlake(ctx, f.x, f.y, f.r, f.alpha);
-        } else {
-          ctx.beginPath();
-          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
-          ctx.shadowColor = '#e0f7fa';
-          ctx.shadowBlur = 12;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-        f.x += f.dx + Math.sin(f.y / 40) * 0.3; // gentle horizontal wave
-        f.y += f.dy;
-        if (f.x < 0) f.x = snowCanvas.width;
-        if (f.x > snowCanvas.width) f.x = 0;
-        if (f.y > snowCanvas.height) {
-          f.x = Math.random() * snowCanvas.width;
-          f.y = -5;
-        }
-      }
-      requestAnimationFrame(animateSnow);
-    }
-    initSnow();
-    animateSnow();
-
-    // --- BLOSSOM ---
-    let petals = [];
-    function initBlossom() {
-      petals = [];
-      for (let i = 0; i < 40; i++) {
-        petals.push({
-          x: Math.random() * blossomCanvas.width,
-          y: Math.random() * blossomCanvas.height,
-          r: Math.random() * 8 + 6,
-          dx: (Math.random() - 0.5) * 0.7,
-          dy: 0.7 + Math.random() * 0.7,
-          rot: Math.random() * Math.PI * 2,
-          dRot: (Math.random() - 0.5) * 0.03,
-          alpha: 0.7 + Math.random() * 0.3
-        });
-      }
-    }
-    function drawPetal(ctx, x, y, r, rot, alpha) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rot);
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.bezierCurveTo(r * 0.5, -r * 0.7, r, r * 0.2, 0, r);
-      ctx.bezierCurveTo(-r, r * 0.2, -r * 0.5, -r * 0.7, 0, 0);
-      ctx.closePath();
-      ctx.fillStyle = `rgba(255,182,193,${alpha})`;
-      ctx.shadowColor = '#ffb6c1';
-      ctx.shadowBlur = 8;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-      ctx.restore();
-    }
-    function animateBlossom() {
-      const ctx = blossomCanvas.getContext('2d');
-      ctx.clearRect(0, 0, blossomCanvas.width, blossomCanvas.height);
-      for (let p of petals) {
-        drawPetal(ctx, p.x, p.y, p.r, p.rot, p.alpha);
-        p.x += p.dx;
-        p.y += p.dy;
-        p.rot += p.dRot;
-        if (p.x < 0) p.x = blossomCanvas.width;
-        if (p.x > blossomCanvas.width) p.x = 0;
-        if (p.y > blossomCanvas.height) {
-          p.x = Math.random() * blossomCanvas.width;
-          p.y = -10;
-        }
-      }
-      requestAnimationFrame(animateBlossom);
-    }
-    initBlossom();
-    animateBlossom();
-
-    // --- MOOD SELECTOR LOGIC ---
-    const moodColors = {
-      night: {
-        '--main-bg': '#0e0e1a',
-        '--main-accent': '#b6e0ff',
-        '--main-text': '#f1f1f1',
-      },
-      fire: {
-        '--main-bg': '#1a0e0e',
-        '--main-accent': '#ffae42',
-        '--main-text': '#fff3e0',
-      },
-      snow: {
-        '--main-bg': '#eaf6ff',
-        '--main-accent': '#b6e0ff',
-        '--main-text': '#1a1a1a',
-      },
-      blossom: {
-        '--main-bg': '#fff0f6',
-        '--main-accent': '#ffb6c1',
-        '--main-text': '#2d1a1a',
-      }
-    };
-    function setMood(mood) {
-      // Hide all canvases
-      starsCanvas.style.display = 'none';
-      fireCanvas.style.display = 'none';
-      snowCanvas.style.display = 'none';
-      blossomCanvas.style.display = 'none';
-      // Show selected
-      if (mood === 'night') starsCanvas.style.display = '';
-      if (mood === 'fire') fireCanvas.style.display = '';
-      if (mood === 'snow') snowCanvas.style.display = '';
-      if (mood === 'blossom') blossomCanvas.style.display = '';
-      // Change theme colors
-      const root = document.documentElement;
-      const colors = moodColors[mood];
-      for (const key in colors) {
-        root.style.setProperty(key, colors[key]);
-      }
-      // Change body background
-      document.body.style.background = colors['--main-bg'];
-      // Change text color for main sections
-      document.body.style.color = colors['--main-text'];
-      // Optionally, update nav and section backgrounds
-      document.querySelectorAll('header, .tm-navbar, .tm-section-pad-top, footer').forEach(el => {
-        el.style.background = colors['--main-bg'];
-        el.style.color = colors['--main-text'];
-      });
-    }
-    // Mood selector event
-    document.querySelectorAll('.mood-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        setMood(this.dataset.mood);
-      });
-    });
-    // Default mood
-    setMood('night');
-    </script>
-    <script>
-
-      // ...existing code...
-      $(function(){
-        // Detect window scroll and update navbar
-        $(window).scroll(function(e){          
-          if($(document).scrollTop() > 120) {
-            $('.tm-navbar').addClass("scroll");
-          } else {
-            $('.tm-navbar').removeClass("scroll");
-          }
-        });
-        // Close mobile menu after click 
-        $('#tmNav a').on('click', function(){
-          $('.navbar-collapse').removeClass('show'); 
-        })
-        // Scroll to corresponding section with animation
-        $('#tmNav').singlePageNav({
-          'easing': 'easeInOutExpo',
-          'speed': 600,
-          'filter': ':not([href="reflections.html"]):not([href="gallery.html"]):not([href="moods.html"])'
-        });        
-        // Add smooth scrolling to all links except Reflections, Gallery, Moods
-        $("a").on('click', function(event) {
-          var href = $(this).attr('href');
-          // Allow normal navigation for reflections, gallery, moods
-          if (this.hash !== "") {
-            event.preventDefault();
-            var hash = this.hash;
-            $('html, body').animate({
-              scrollTop: $(hash).offset().top
-            }, 600, 'easeInOutExpo', function(){
-              window.location.hash = hash;
-            });
-          }
-        });
-        // Pop up
-        $('.tm-gallery').magnificPopup({
-          delegate: 'a',
-          type: 'image',
-          gallery: { enabled: true }
-        });
-        $('.tm-testimonials-carousel').slick({
-          dots: true,
-          prevArrow: false,
-          nextArrow: false,
-          infinite: false,
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          responsive: [
-            {
-              breakpoint: 992,
-              settings: {
-                slidesToShow: 2
-              }
-            },
-            {
-              breakpoint: 768,
-              settings: {
-                slidesToShow: 2
-              }
-            }, 
-            {
-              breakpoint: 480,
-              settings: {
-                  slidesToShow: 1
-              }                 
-            }
-          ]
-        });
-        // Gallery
-        $('.tm-gallery').slick({
-          dots: true,
-          infinite: false,
-          slidesToShow: 5,
-          slidesToScroll: 2,
-          responsive: [
-          {
-            breakpoint: 1199,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 2
-            }
-          },
-          {
-            breakpoint: 991,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 2
-            }
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1
-            }
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1
-            }
-          }
-        ]
-        });
-      });
-    </script>
-  </body>
+</script>
+</body>
 </html>
