@@ -5,90 +5,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery – Quiet Place</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: "Inter", sans-serif;
-      background: #0e0e0e;
-      color: #f1f1f1;
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    :root {
+      --bg: #0c0c0c;
+      --surface: #141414;
+      --surface2: #1a1a1a;
+      --border: rgba(255,255,255,0.06);
+      --text: #e8e4de;
+      --muted: rgba(255,255,255,0.38);
+      --accent: #b6d9e8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
     header {
-      padding: 1rem 2rem;
-      border-bottom: 1px solid #333;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      background: #141414;
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    header a {
+      position: absolute;
+      left: 2rem;
     }
 
     header a {
       text-decoration: none;
-      color: #f1f1f1;
-      font-weight: bold;
-      font-size: 0.9rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
     }
+
+    header a:hover { color: var(--text); }
 
     header span {
-      font-size: 1rem;
-      letter-spacing: 1px;
-      opacity: 0.8;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      opacity: 0.7;
     }
 
+    /* ── Gallery Grid ── */
     .gallery-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      padding: 2rem;
-      max-width: 1200px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+      padding: 2.5rem 2rem;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
-    .gallery-item {
-      background: #1a1a1a;
-      border-radius: 6px;
+    /* ── Flip Card ── */
+    .card {
+      position: relative;
+      border-radius: 8px;
+      aspect-ratio: 3 / 4;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+
+    .card-inner {
+      position: absolute; inset: 0;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute; inset: 0;
+      border-radius: 8px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s ease, opacity 0.4s ease;
     }
 
-    .gallery-item:hover {
-      transform: translateY(-4px);
-    }
-
-    .gallery-item img {
+    /* Front */
+    .card-front img {
       width: 100%;
-      height: 200px;
+      height: 100%;
       object-fit: cover;
       display: block;
+      transition: transform 0.5s ease;
     }
 
-    .caption {
-      padding: 0.8rem;
-      font-size: 0.9rem;
-      color: #ccc;
+    .card:hover .card-front img {
+      transform: scale(1.03);
+    }
+
+    .card-front .gradient-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .card-front .photo-name {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+    }
+
+    .card-front .flip-hint {
+      position: absolute;
+      top: 0.75rem; right: 0.75rem;
+      width: 30px; height: 30px;
+      background: rgba(0,0,0,0.45);
+      border: 0.5px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .card:hover .flip-hint { opacity: 1; }
+
+    .flip-hint svg {
+      width: 13px; height: 13px;
+      stroke: rgba(255,255,255,0.7);
+      fill: none;
+    }
+
+    /* Back */
+    .card-back {
+      transform: rotateY(180deg);
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      gap: 1.25rem;
       text-align: center;
     }
 
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.85rem;
-      color: #aaa;
-      border-top: 1px solid #222;
+    .card-back .quote-mark {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 0;
+      padding-top: 1rem;
+      user-select: none;
     }
 
-    /* Loader */
+    .card-back .message {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.68);
+      line-height: 1.85;
+    }
+
+    .card-back .photo-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+    }
+
+    .card-back .open-view-btn {
+      margin-top: 0.25rem;
+      padding: 7px 18px;
+      border-radius: 99px;
+      border: 0.5px solid rgba(255,255,255,0.18);
+      background: transparent;
+      color: rgba(255,255,255,0.42);
+      font-family: "DM Sans", sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .card-back .open-view-btn:hover {
+      border-color: rgba(255,255,255,0.42);
+      color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ── Loader ── */
     .loader-wrapper {
       grid-column: 1 / -1;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 4rem 0;
+      padding: 5rem 0;
       transition: opacity 0.5s ease;
     }
 
@@ -98,37 +237,198 @@
     }
 
     .whisper-loader span {
-      width: 10px;
-      height: 10px;
-      background: #b6e0ff;
+      width: 7px; height: 7px;
+      background: var(--accent);
       border-radius: 50%;
-      opacity: 0.4;
+      opacity: 0.3;
       animation: pulse 1.4s infinite ease-in-out;
     }
 
-    .whisper-loader span:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .whisper-loader span:nth-child(3) {
-      animation-delay: 0.4s;
-    }
+    .whisper-loader span:nth-child(2) { animation-delay: 0.2s; }
+    .whisper-loader span:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes pulse {
-      0%, 80%, 100% {
-        transform: scale(0.6);
-        opacity: 0.3;
-      }
-      40% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.2; }
+      40% { transform: scale(1.2); opacity: 0.9; }
     }
 
-    @media (max-width: 500px) {
-      .gallery-item img {
-        height: 150px;
+    /* ── View Mode Overlay ── */
+    .view-mode {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+
+    .view-mode.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .vm-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(6, 6, 6, 0.93);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .vm-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+      max-width: 500px;
+      width: 88%;
+      transform: scale(0.96) translateY(16px);
+      transition: transform 0.45s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    .view-mode.open .vm-content {
+      transform: scale(1) translateY(0);
+    }
+
+    .vm-image-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    .vm-img {
+      width: 100%;
+      max-height: 58vh;
+      object-fit: contain;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .vm-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      text-align: center;
+    }
+
+    .vm-message {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.9;
+    }
+
+    .vm-message::before { content: '\201C'; }
+    .vm-message::after  { content: '\201D'; }
+
+    .vm-author {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+    }
+
+    /* Dots */
+    .vm-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .vm-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      transition: background 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+
+    .vm-dot.active {
+      background: rgba(255,255,255,0.55);
+      transform: scale(1.4);
+    }
+
+    /* Close */
+    .vm-close {
+      position: fixed;
+      top: 1.4rem; right: 1.5rem;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 0.5px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 2;
+    }
+
+    .vm-close:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* Arrows */
+    .vm-arrow {
+      position: fixed;
+      top: 50%; transform: translateY(-50%);
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 2;
+    }
+
+    .vm-arrow:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .vm-prev { left: 1.25rem; }
+    .vm-next { right: 1.25rem; }
+
+    /* Counter */
+    .vm-counter {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%; transform: translateX(-50%);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.2);
+      z-index: 2;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2.5rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.18);
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .gallery-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 0.85rem;
+        padding: 1.5rem 1rem;
       }
+
+      .vm-content { width: 92%; }
+      .vm-arrow { display: none; }
     }
   </style>
 </head>
@@ -138,99 +438,289 @@
 <header>
   <a href="index.html">← Back</a>
   <span>Gallery</span>
-  <div></div>
 </header>
 
 <div class="gallery-container" id="gallery">
 
-  <!-- Loader -->
+  <!-- Loader shown while dynamic images load -->
   <div class="loader-wrapper" id="gallery-loader">
     <div class="whisper-loader">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </div>
   </div>
 
-  <!-- Permanent Images -->
-  <div class="gallery-item">
-    <img src="img/gallery1.jpg" alt="Rain on Glass">
-    <div class="caption">Rain on Glass</div>
+  <!-- Permanent / static images -->
+  <div class="card" data-message="Even the sky needs to cry sometimes." data-name="Rain on Glass">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="img/gallery1.jpg" alt="Rain on Glass" loading="lazy">
+        <div class="gradient-overlay"></div>
+        <div class="photo-name">Rain on Glass</div>
+        <div class="flip-hint">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="quote-mark">"</div>
+        <div class="message">Even the sky needs to cry sometimes.</div>
+        <div class="photo-label">Rain on Glass</div>
+        <button class="open-view-btn">view full ↗</button>
+      </div>
+    </div>
   </div>
 
-  <div class="gallery-item">
-    <img src="img/gallery2.jpg" alt="Shadows in Motion">
-    <div class="caption">Shadows in Motion</div>
+  <div class="card" data-message="What moves you when nothing is moving?" data-name="Shadows in Motion">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="img/gallery2.jpg" alt="Shadows in Motion" loading="lazy">
+        <div class="gradient-overlay"></div>
+        <div class="photo-name">Shadows in Motion</div>
+        <div class="flip-hint">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="quote-mark">"</div>
+        <div class="message">What moves you when nothing is moving?</div>
+        <div class="photo-label">Shadows in Motion</div>
+        <button class="open-view-btn">view full ↗</button>
+      </div>
+    </div>
   </div>
 
-  <div class="gallery-item">
-    <img src="img/gallery3.jpg" alt="Sea View">
-    <div class="caption">Sea View</div>
+  <div class="card" data-message="The horizon keeps promising something." data-name="Sea View">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="img/gallery3.jpg" alt="Sea View" loading="lazy">
+        <div class="gradient-overlay"></div>
+        <div class="photo-name">Sea View</div>
+        <div class="flip-hint">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="quote-mark">"</div>
+        <div class="message">The horizon keeps promising something.</div>
+        <div class="photo-label">Sea View</div>
+        <button class="open-view-btn">view full ↗</button>
+      </div>
+    </div>
   </div>
 
-  <div class="gallery-item">
-    <img src="img/gallery4.jpg" alt="Drift Between Days">
-    <div class="caption">Drift Between Days</div>
+  <div class="card" data-message="In the in-between, time forgets itself." data-name="Drift Between Days">
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="img/gallery4.jpg" alt="Drift Between Days" loading="lazy">
+        <div class="gradient-overlay"></div>
+        <div class="photo-name">Drift Between Days</div>
+        <div class="flip-hint">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="quote-mark">"</div>
+        <div class="message">In the in-between, time forgets itself.</div>
+        <div class="photo-label">Drift Between Days</div>
+        <button class="open-view-btn">view full ↗</button>
+      </div>
+    </div>
   </div>
 
 </div>
 
-<footer>
-  ✦ Quiet Place · 2026
-</footer>
+<!-- ── View Mode Overlay ── -->
+<div class="view-mode" id="viewMode">
+  <div class="vm-backdrop" id="vmBackdrop"></div>
+  <button class="vm-close" id="vmClose">&#x2715;</button>
+  <button class="vm-arrow vm-prev" id="vmPrev">&#8592;</button>
+  <button class="vm-arrow vm-next" id="vmNext">&#8594;</button>
+
+  <div class="vm-content">
+    <div class="vm-image-wrap">
+      <img class="vm-img" id="vmImg" src="" alt="">
+    </div>
+    <div class="vm-text">
+      <div class="vm-message" id="vmMsg"></div>
+      <div class="vm-author" id="vmAuthor"></div>
+    </div>
+    <div class="vm-dots" id="vmDots"></div>
+  </div>
+
+  <div class="vm-counter" id="vmCounter"></div>
+</div>
+
+<footer>✦ Quiet Place · 2026</footer>
 
 <script>
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyK0vP3RzuO9fw6dQtkiMV8S6TwALQZXVk1jgfOjHD833JE5pO0F817b9CI6zXs062vHQ/exec";
 
-const gallery = document.getElementById("gallery");
-const loader = document.getElementById("gallery-loader");
+const galleryEl   = document.getElementById("gallery");
+const loaderEl    = document.getElementById("gallery-loader");
+const viewMode    = document.getElementById("viewMode");
+const vmImg       = document.getElementById("vmImg");
+const vmMsg       = document.getElementById("vmMsg");
+const vmAuthor    = document.getElementById("vmAuthor");
+const vmClose     = document.getElementById("vmClose");
+const vmBackdrop  = document.getElementById("vmBackdrop");
+const vmPrev      = document.getElementById("vmPrev");
+const vmNext      = document.getElementById("vmNext");
+const vmDots      = document.getElementById("vmDots");
+const vmCounter   = document.getElementById("vmCounter");
 
+// Collect all items (static + dynamic) for View Mode
+let allItems = [];
+let currentIdx = 0;
+
+// ── Build a card element ──
+function makeCard(imgSrc, name, message) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.name = name;
+  card.dataset.message = message;
+
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="${imgSrc}" alt="${name}" loading="lazy">
+        <div class="gradient-overlay"></div>
+        <div class="photo-name">${name}</div>
+        <div class="flip-hint">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="rgba(255,255,255,0.7)" fill="none">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="quote-mark">"</div>
+        <div class="message">${message}</div>
+        <div class="photo-label">${name}</div>
+        <button class="open-view-btn">view full ↗</button>
+      </div>
+    </div>`;
+
+  return card;
+}
+
+// ── Wire up a card with click events ──
+function initCard(card, itemIndex) {
+  card.addEventListener("click", (e) => {
+    if (e.target.classList.contains("open-view-btn")) {
+      openView(itemIndex);
+      return;
+    }
+    card.classList.toggle("flipped");
+  });
+}
+
+// ── Collect static cards already in HTML ──
+document.querySelectorAll(".card").forEach((card) => {
+  const idx = allItems.length;
+  allItems.push({
+    image: card.querySelector("img").src,
+    name: card.dataset.name,
+    message: card.dataset.message,
+  });
+  initCard(card, idx);
+});
+
+// ── Rebuild dots whenever allItems changes ──
+function rebuildDots() {
+  vmDots.innerHTML = "";
+  allItems.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "vm-dot" + (i === currentIdx ? " active" : "");
+    dot.addEventListener("click", () => openView(i));
+    vmDots.appendChild(dot);
+  });
+}
+
+// ── View Mode ──
+function openView(idx) {
+  currentIdx = idx;
+  updateView();
+  viewMode.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeView() {
+  viewMode.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function updateView() {
+  const item = allItems[currentIdx];
+  vmImg.src    = item.image;
+  vmMsg.textContent    = item.message || "";
+  vmAuthor.textContent = item.name;
+  vmCounter.textContent = (currentIdx + 1) + " / " + allItems.length;
+  document.querySelectorAll(".vm-dot").forEach((d, i) => {
+    d.classList.toggle("active", i === currentIdx);
+  });
+}
+
+vmClose.addEventListener("click", closeView);
+vmBackdrop.addEventListener("click", closeView);
+
+vmPrev.addEventListener("click", () => {
+  currentIdx = (currentIdx - 1 + allItems.length) % allItems.length;
+  updateView();
+});
+
+vmNext.addEventListener("click", () => {
+  currentIdx = (currentIdx + 1) % allItems.length;
+  updateView();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (!viewMode.classList.contains("open")) return;
+  if (e.key === "Escape")      closeView();
+  if (e.key === "ArrowLeft")  { currentIdx = (currentIdx - 1 + allItems.length) % allItems.length; updateView(); }
+  if (e.key === "ArrowRight") { currentIdx = (currentIdx + 1) % allItems.length; updateView(); }
+});
+
+rebuildDots();
+
+// ── Fetch dynamic images from Google Sheets ──
 fetch(APPS_SCRIPT_URL)
   .then(res => res.json())
   .then(data => {
-
     if (!data || data.length === 0) {
-      loader.remove();
+      loaderEl.remove();
       return;
     }
 
     const imagePromises = [];
 
     data.reverse().forEach(item => {
-
       if (!item.image) return;
 
-      const card = document.createElement("div");
-      card.className = "gallery-item";
+      const idx  = allItems.length;
+      const name = item.Name || item.name || "";
+      const msg  = item.message || item.caption || "";
 
-      const img = new Image();
-      img.src = item.image;
+      allItems.push({ image: item.image, name, message: msg });
 
-      const imgPromise = new Promise((resolve) => {
-        img.onload = resolve;
+      const card = makeCard(item.image, name, msg);
+      initCard(card, idx);
+
+      const img = card.querySelector("img");
+      imagePromises.push(new Promise(resolve => {
+        img.onload  = resolve;
         img.onerror = resolve;
-      });
+      }));
 
-      imagePromises.push(imgPromise);
-
-      card.appendChild(img);
-
-      const caption = document.createElement("div");
-      caption.className = "caption";
-      caption.textContent = item.message || "";
-      card.appendChild(caption);
-
-      gallery.appendChild(card);
+      galleryEl.appendChild(card);
     });
 
     Promise.all(imagePromises).then(() => {
-      loader.style.opacity = "0";
-      setTimeout(() => loader.remove(), 500);
+      loaderEl.style.opacity = "0";
+      setTimeout(() => loaderEl.remove(), 500);
+      rebuildDots();
     });
-
   })
   .catch(err => {
-    loader.remove();
+    loaderEl.remove();
     console.log("Gallery fetch error:", err);
   });
 </script>
