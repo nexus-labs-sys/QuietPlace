@@ -4,156 +4,459 @@
   <link rel="icon" type="image/png" href="img/icons8-stars-16.png" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Whisper Something</title>
+  <title>Whisper Something · Quiet Place</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: "Inter", sans-serif;
-      background: #0e0e0e;
-      color: #f1f1f1;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
+    :root {
+      --bg: #080810;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --accent: #b6c8ff;
+      --accent2: #7fa3ff;
+      --text: #e8eaf0;
+      --muted: rgba(232,234,240,0.45);
+      --radius: 18px;
     }
 
-    header {
-      padding: 1rem 2rem;
-      border-bottom: 1px solid #333;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #141414;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 300; }
 
-    header a {
-      text-decoration: none;
-      color: #f1f1f1;
-      font-weight: bold;
-      font-size: 0.9rem;
+    /* ── NAV ── */
+    nav {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px); background: rgba(8,8,16,0.65);
+      position: sticky; top: 0; z-index: 10;
     }
+    .nav-left { display: flex; align-items: center; gap: 22px; }
+    .nav-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; letter-spacing: 3px; color: var(--muted); text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { font-size: 0.74rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-center { font-family: 'Cormorant Garamond', serif; font-size: 1rem; letter-spacing: 5px; text-transform: uppercase; color: var(--muted); text-align: center; }
+    .nav-right { display: flex; justify-content: flex-end; }
 
-    header span {
-      font-size: 1rem;
-      letter-spacing: 1px;
-      opacity: 0.8;
-    }
+    /* ── PARTICLES ── */
+    #bg-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+
+    /* ── CONTAINER ── */
+    .shell { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
     .container {
-      max-width: 600px;
-      margin: 3rem auto;
-      padding: 0 1rem;
+      max-width: 560px;
+      margin: 4rem auto 3rem;
+      padding: 0 1.5rem;
+      width: 100%;
     }
 
-    form {
-      background: #1a1a1a;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    .page-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      color: var(--text);
+      margin-bottom: 0.4rem;
     }
+    .page-subhead {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── FORM ── */
+    form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .field { margin-bottom: 1.6rem; }
+    .field:last-of-type { margin-bottom: 0; }
 
     label {
       display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #bbb;
+      font-size: 0.65rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
     }
 
-    input, textarea {
+    input[type="text"],
+    input[type="email"],
+    textarea {
       width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1.5rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      background: #0e0e0e;
-      color: #f1f1f1;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border: 1px solid var(--border);
       outline: none;
-      border: 1px solid #333;
+      transition: border-color 0.3s;
+      caret-color: var(--accent);
     }
+    input::placeholder, textarea::placeholder { color: rgba(232,234,240,0.18); }
+    input:focus, textarea:focus { border-color: rgba(127,163,255,0.35); }
 
-    button {
-      background: linear-gradient(135deg, #6a5acd, #836fff);
-      color: white;
-      border: none;
-      padding: 0.9rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 6px;
+    textarea { resize: vertical; line-height: 1.6; }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
+      border: 1px dashed rgba(255,255,255,0.12);
+      outline: none;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: border-color 0.3s, color 0.3s;
     }
+    input[type="file"]:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
 
-    button:hover {
-      background: linear-gradient(135deg, #5a4ebd, #6a5acd);
+    .field-hint {
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      color: #555a6e;
+      line-height: 1.6;
+      letter-spacing: 0.3px;
     }
+    .field-hint a {
+      color: #6d7a9f;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.3s;
+    }
+    .field-hint a:hover { color: var(--accent); }
 
-    .success-message {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.95rem;
-      color: #9be7a2;
+    /* ── PROGRESS ── */
+    #upload-progress {
       display: none;
+      margin-top: 0.9rem;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+    }
+    .progress-label {
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    #upload-percent {
+      font-size: 0.62rem;
+      letter-spacing: 1.5px;
+      color: var(--accent2);
+    }
+    .progress-track {
+      height: 2px;
+      border-radius: 2px;
+      background: var(--border);
+      overflow: hidden;
+    }
+    #upload-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      transition: width 0.2s ease;
     }
 
+    /* ── SUBMIT ── */
+    .submit-row {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    button[type="submit"] {
+      font-size: 0.7rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(127,163,255,0.08);
+      border: 1px solid rgba(127,163,255,0.22);
+      border-radius: 40px;
+      padding: 10px 26px;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+    }
+    button[type="submit"]:hover { background: rgba(127,163,255,0.18); }
+
+    #success-msg {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      letter-spacing: 1px;
+      color: #7fd4a0;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    #success-msg.visible { display: block; opacity: 1; }
+
+    /* ── DIVIDER ── */
+    .form-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.2rem 0 1.6rem;
+    }
+
+    /* ── FOOTER ── */
     footer {
       text-align: center;
       padding: 2rem;
-      font-size: 0.85rem;
-      color: #aaa;
-      border-top: 1px solid #222;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.2);
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 13px 16px; }
+      .nav-links { display: none; }
+      .nav-center { display: none; }
+      .container { margin-top: 2.5rem; }
+      form { padding: 1.5rem; }
     }
   </style>
 </head>
+
 <body>
-  <!-- Header -->
-  <header>
-    <a href="index.html">← Back</a>
-    <span>Whisper Something</span>
-    <div></div>
-  </header>
 
-  <!-- Form -->
+<canvas id="bg-canvas"></canvas>
+
+<div class="shell">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-brand">Quiet <span>Place</span></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="focus.html">Focus</a>
+        <a href="gallery.html">Gallery</a>
+      </div>
+    </div>
+    <div class="nav-center">Whisper</div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <!-- FORM -->
   <div class="container">
-    <form id="whisper-form" 
-          action="https://script.google.com/macros/s/AKfycbyfdQQsnLGupu8zusNHPSk5eSgQkzgW_2gC_s3dNOugDYKp4mdh5i0o3E02rrV-yK_bPQ/exec" 
-          method="POST" target="hidden_iframe" onsubmit="submitted=true;">
-      
-      <label for="name">Name (optional)</label>
-      <input type="text" id="name" name="name" placeholder="Anonymous">
 
-      <label for="email">Email (optional)</label>
-      <input type="email" id="email" name="email" placeholder="you@example.com">
+    <p class="page-heading">Whisper something.</p>
+    <p class="page-subhead">Leave a thought, a feeling, a moment.</p>
 
-      <label for="message">Your Whisper</label>
-      <textarea id="message" name="message" rows="4" placeholder="Write something..." required></textarea>
+    <form id="whisper-form">
 
-      <button type="submit">Send</button>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Anonymous">
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com">
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="field">
+        <label for="message">Your Whisper</label>
+        <textarea id="message" name="message" rows="4" placeholder="Write something..." required></textarea>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="field">
+        <label for="image">Attach an image</label>
+        <input type="file" id="image" name="image" accept="image/*">
+        <p class="field-hint">
+          Something you made, found, or felt — it will appear in the
+          <a href="gallery.html">Gallery</a> alongside your words.
+        </p>
+
+        <!-- Progress UI -->
+        <div id="upload-progress">
+          <div class="progress-meta">
+            <span class="progress-label">Sending</span>
+            <span id="upload-percent">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="upload-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit">Whisper →</button>
+        <span id="success-msg">✦ Sent into the quiet.</span>
+      </div>
+
     </form>
-    <div class="success-message" id="success-msg">✨ Whisper sent!</div>
   </div>
 
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
+  <footer>✦ Quiet Place · 2026</footer>
 
-  <!-- Footer -->
-  <footer>
-    ✦ Quiet Place · 2026
-  </footer>
+</div>
 
-  <!-- Script -->
-  <script>
-    let submitted = false;
-    document.getElementById("whisper-form").addEventListener("submit", () => {
-      setTimeout(() => {
-        if (submitted) {
-          document.getElementById("success-msg").style.display = "block";
-          document.getElementById("whisper-form").reset();
-          submitted = false;
-        }
-      }, 1200);
-    });
-  </script>
+<!-- Particles -->
+<script>
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+let particles = [];
+function initCanvas() {
+  bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; particles = [];
+  for (let i = 0; i < 60; i++) particles.push({
+    x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
+    r: Math.random() * 1.2 + 0.3, dx: (Math.random() - 0.5) * 0.15,
+    dy: (Math.random() - 0.5) * 0.15, tw: Math.random() * Math.PI * 2
+  });
+}
+initCanvas(); window.addEventListener('resize', initCanvas);
+function drawBg() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  for (let p of particles) {
+    p.x += p.dx; p.y += p.dy; p.tw += 0.02;
+    if (p.x < 0) p.x = bgCanvas.width; if (p.x > bgCanvas.width) p.x = 0;
+    if (p.y < 0) p.y = bgCanvas.height; if (p.y > bgCanvas.height) p.y = 0;
+    bgCtx.beginPath(); bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    bgCtx.fillStyle = `rgba(127,163,255,${0.3 + 0.3 * Math.sin(p.tw)})`;
+    bgCtx.shadowColor = '#7fa3ff'; bgCtx.shadowBlur = 6; bgCtx.fill(); bgCtx.shadowBlur = 0;
+  }
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+</script>
+
+<!-- Upload logic -->
+<script>
+const form          = document.getElementById("whisper-form");
+const successMsg    = document.getElementById("success-msg");
+const imageInput    = document.getElementById("image");
+const progressWrap  = document.getElementById("upload-progress");
+const progressBar   = document.getElementById("upload-bar");
+const progressPct   = document.getElementById("upload-percent");
+const progressLabel = document.querySelector(".progress-label");
+
+const CLOUD_NAME      = "dnebau7uk";
+const UPLOAD_PRESET   = "Whisper";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzCpXCwTOq62a5YPVwetR5FoixwEBldo7Ip8khLzaFbiWccGoJ5HmBFFYagtFel-SYLw/exec";
+
+function showProgress(pct, label) {
+  progressWrap.style.display = "block";
+  progressBar.style.width = pct + "%";
+  progressPct.textContent = pct + "%";
+  if (label) progressLabel.textContent = label;
+}
+
+function hideProgress() {
+  progressWrap.style.display = "none";
+  progressBar.style.width = "0%";
+  progressPct.textContent = "0%";
+  progressLabel.textContent = "Sending";
+}
+
+function uploadToCloudinary(file) {
+  return new Promise((resolve, reject) => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", UPLOAD_PRESET);
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.onprogress = function(e) {
+      if (e.lengthComputable) {
+        // Image upload is the first 80% of the total journey
+        const pct = Math.round((e.loaded / e.total) * 80);
+        showProgress(pct, "Uploading image");
+      }
+    };
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        // Image done — nudge to 85% before the send step
+        showProgress(85, "Uploading image");
+        resolve(JSON.parse(xhr.responseText).secure_url);
+      } else {
+        reject(new Error("Upload failed."));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("Network error."));
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`);
+    xhr.send(data);
+  });
+}
+
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  let imageUrl = "";
+  const file = imageInput.files[0];
+
+  // Always show the bar immediately so there's no blank moment
+  showProgress(file ? 0 : 50, file ? "Uploading image" : "Sending whisper");
+
+  if (file) {
+    try {
+      imageUrl = await uploadToCloudinary(file);
+    } catch (err) {
+      console.error(err);
+      hideProgress();
+      return;
+    }
+  }
+
+  // Phase 2 — sending to Apps Script
+  showProgress(file ? 90 : 70, "Sending whisper");
+
+  const finalData = new FormData();
+  finalData.append("name",     form.elements["name"].value);
+  finalData.append("email",    form.elements["email"].value);
+  finalData.append("message",  form.elements["message"].value);
+  finalData.append("imageUrl", imageUrl);
+
+  await fetch(APPS_SCRIPT_URL, { method: "POST", body: finalData });
+
+  // Complete
+  showProgress(100, "Sent");
+
+  setTimeout(() => {
+    hideProgress();
+    form.reset();
+    const msg = document.getElementById("success-msg");
+    msg.style.display = "block";
+    requestAnimationFrame(() => msg.classList.add("visible"));
+  }, 500);
+});
+</script>
+
 </body>
 </html>
-
-
-
-
-
