@@ -5,179 +5,379 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Me – Quiet Place</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: "Inter", sans-serif;
-      background: #0e0e0e;
-      color: #f1f1f1;
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    :root {
+      --bg: #0c0c0c;
+      --surface: #141414;
+      --border: rgba(255,255,255,0.06);
+      --text: #e8e4de;
+      --muted: rgba(255,255,255,0.38);
+      --accent: #b6d9e8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
       line-height: 1.8;
     }
+
+    /* ── Header ── */
     header {
-      padding: 1rem 2rem;
-      border-bottom: 1px solid #333;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #141414;
-      position: relative;
-      z-index: 10;
-    }
-    header a {
-      text-decoration: none;
-      color: #f1f1f1;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
-    header span {
-      font-size: 1rem;
-      letter-spacing: 1px;
-      opacity: 0.8;
-    }
-    .aboutme-container {
-      max-width: 700px;
-      margin: 3rem auto;
-      padding: 0 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .aboutme-box {
-      font-size: 1.1rem;
-      margin: 2rem 0;
-      padding: 1.5rem;
-      background: #1a1a1a;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      width: 100%;
-      max-width: 500px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .aboutme-box strong {
-      color: #b6e0ff;
-    }
-    /* FIXED: moved outside .aboutme-box and out of its closing brace */
-    .aboutme-social {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.8rem;
-      margin: 2.5rem 0 1.5rem 0;
-      flex-wrap: wrap;
-      width: 100%;
-      max-width: 500px;
-      padding: 0 1rem;
-      box-sizing: border-box;
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .aboutme-social a {
-      display: inline-block;
-      padding: 0.7rem 1.3rem;
-      background: #b6e0ff;
-      color: #141414;
-      border-radius: 24px;
-      font-weight: 600;
+
+    header a {
+      position: absolute;
+      left: 2rem;
       text-decoration: none;
-      transition: background 0.2s, color 0.2s;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    header a:hover { color: var(--text); }
+
+    header span {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      opacity: 0.7;
+    }
+
+    /* ── Main container ── */
+    .about-wrap {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 4rem clamp(1.25rem, 5vw, 3rem) 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    /* ── Name + tagline ── */
+    .about-hero {
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.7s ease forwards;
     }
-    .aboutme-social a:hover {
-      background: #7fcfff;
-      color: #0e0e0e;
+
+    .about-hero h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2rem, 6vw, 2.8rem);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: var(--text);
     }
-    @media (max-width: 480px) {
-      .aboutme-social {
-        flex-direction: column;
-        align-items: center;
+
+    .about-hero .tagline {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .about-divider {
+      width: 32px;
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+      margin: 0.25rem auto;
+    }
+
+    /* ── Body text card ── */
+    .about-card {
+      width: 100%;
+      background: #111;
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 2.5rem clamp(1.5rem, 4vw, 3rem);
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .about-card p {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      font-weight: 300;
+      color: rgba(255,255,255,0.62);
+      line-height: 2;
+      
+    }
+
+    .about-card p strong {
+      font-weight: 400;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* Word fade-in effect */
+    .word {
+      display: inline;
+      opacity: 0;
+      filter: blur(4px);
+      transition: opacity 0.35s ease, filter 0.35s ease;
+    }
+
+    .word.visible {
+      opacity: 1;
+      filter: blur(0);
+    }
+
+    /* ── Social links ── */
+    .about-social {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.7s ease 0.4s forwards;
+    }
+
+    .about-social a {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 24px;
+      border-radius: 4px;
+      border: 0.5px solid rgba(255,255,255,0.12);
+      background: #111;
+      color: rgba(255,255,255,0.45);
+      font-family: "DM Sans", sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Sliding shimmer fill on hover */
+    .about-social a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0%, rgba(182,217,232,0.07) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.45s ease;
+    }
+
+    .about-social a:hover::before { transform: translateX(100%); }
+
+    /* Bottom glow line */
+    .about-social a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0;
+      transform: scaleX(0);
+      transition: opacity 0.3s ease, transform 0.35s ease;
+    }
+
+    .about-social a:hover {
+      color: rgba(255,255,255,0.88);
+      border-color: rgba(182,217,232,0.28);
+      box-shadow: 0 0 18px rgba(182,217,232,0.06);
+    }
+
+    .about-social a:hover::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    /* Press-down click */
+    .about-social a:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 28px rgba(182,217,232,0.12);
+      border-color: rgba(182,217,232,0.5);
+      color: var(--accent);
+      transition: transform 0.08s ease;
+    }
+
+    /* Ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(182,217,232,0.15);
+      transform: scale(0);
+      animation: rippleOut 0.55s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rippleOut {
+      to { transform: scale(5); opacity: 0; }
+    }
+
+    /* Small dot accent */
+    .social-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.4;
+      flex-shrink: 0;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .about-social a:hover .social-dot {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+
+    /* ── Fade up animation ── */
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
-      .aboutme-social a {
-        width: 80%;
-        text-align: center;
-      }
     }
+
+    /* ── Footer ── */
     footer {
       text-align: center;
-      padding: 2rem;
-      font-size: 0.85rem;
-      color: #aaa;
-      border-top: 1px solid #222;
+      padding: 2.5rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.18);
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .about-wrap { padding: 3rem 1.75rem 4rem; gap: 2.25rem; }
+      .about-card { padding: 2rem 1.75rem; }
+    }
+
+    @media (max-width: 480px) {
+      .about-wrap { padding: 2.5rem 1.1rem 3.5rem; gap: 2rem; }
+      .about-card { padding: 1.75rem 1.25rem; }
+      .about-social { flex-direction: column; align-items: center; }
+      .about-social a { width: 72%; justify-content: center; }
     }
   </style>
 </head>
-<body>
-  <header>
-    <a href="index.html">← Back</a>
-    <span>About Me</span>
-    <div></div>
-  </header>
-  <div class="aboutme-container">
-    <div class="aboutme-box">
-      <h2 style="margin-top:0; color:#b6e0ff;">Hi, I'm Priyan!</h2>
-      <p id="aboutme-typing" style="color:#e0e0e0; line-height:1.6; min-height: 220px;"></p>
-      <style>
-        .typing-cursor {
-          display: inline-block;
-          width: 1ch;
-          background: none;
-          color: #b6e0ff;
-          animation: blink 1s steps(1) infinite;
-          font-weight: bold;
-          font-size: 1.1em;
-          vertical-align: middle;
-        }
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-      </style>
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          const text = `<strong>INFJ-A</strong>, the kind who finds meaning in both silence and signals.<br><br>
-  I love shaping <strong>patterns of signals</strong>, turning them into something alive - 
-  because for me, design is just another form of reflection.<br><br>
-  When I'm not lost in schematics, I write. This site began as a space for my 
-  <strong>reflections</strong>, where words drift like signals on a quiet line.<br><br>
-  I enjoy <strong>trekking, evening walks, and camping</strong> - small adventures that remind me 
-  the world is as layered as any circuit.<br><br>
-  I know just enough coding to bring this page alive - part hobby, part journal.<br><br>
-  If something here resonates, feel free to send a request.`;
-          const target = document.getElementById('aboutme-typing');
-          let i = 0;
-          let isTag = false;
-          let html = '';
-          function type() {
-            if (i < text.length) {
-              let char = text[i];
-              if (char === '<') isTag = true;
-              if (isTag) {
-                html += char;
-                if (char === '>') isTag = false;
-              } else {
-                html += char;
-              }
-              target.innerHTML = html + '<span class="typing-cursor">|</span>';
-              i++;
-              setTimeout(type, 18 + Math.random() * 30);
-            } else {
-              target.innerHTML = html;
-            }
-          }
-          type();
-        });
-      </script>
-    </div>
 
-    <div class="aboutme-social">
-      <a href="https://www.instagram.com/" target="_blank">Instagram</a>
-      <a href="https://discord.gg/SNhzuKCvhw" target="_blank">Discord</a>
-      <a href="https://www.twitch.tv/pri_yan_" target="_blank">Twitch</a>
-    </div>
+<body>
+
+<header>
+  <a href="index.html">← Back</a>
+  <span>About Me</span>
+</header>
+
+<div class="about-wrap">
+
+  <!-- Hero -->
+  <div class="about-hero">
+    <h1>Hi, I'm Priyan.</h1>
+    <div class="about-divider"></div>
+    <div class="tagline">INFJ-A &nbsp;·&nbsp; Light & signal &nbsp;·&nbsp; Quiet observer</div>
   </div>
-  <footer>
-    ✦ Quiet Place · 2026
-  </footer>
+
+  <!-- Bio card with typewriter -->
+  <div class="about-card">
+    <p id="about-typing"></p>
+  </div>
+
+  <!-- Social links -->
+  <div class="about-social">
+    <a href="https://www.instagram.com/" target="_blank"><span class="social-dot"></span>Instagram</a>
+    <a href="https://discord.gg/SNhzuKCvhw" target="_blank"><span class="social-dot"></span>Discord</a>
+    <a href="https://www.twitch.tv/pri_yan_" target="_blank"><span class="social-dot"></span>Twitch</a>
+  </div>
+
+</div>
+
+<footer>✦ Quiet Place · 2026</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const rawText = `I live between two quiet obsessions ~ <strong>light and signal</strong>. With a camera, I look for what most people walk past. The way afternoon light falls unevenly. A reflection that tells a truer story than what cast it. <strong>Photography</strong>, for me, is less about capturing and more about paying attention.<br><br>With <strong>electronics</strong>, I like knowing what's underneath ~ tracing a circuit, understanding why something works, finding the logic in what looks like noise. There's a kind of calm in that. Order beneath the surface.<br><br>Both feel like the same thing, really. Slowing down enough to see clearly.<br><br>This site is where I put what I notice. No particular reason ~ just that some things feel worth keeping.`;
+
+    const target = document.getElementById('about-typing');
+
+    // Split preserving HTML tags — wrap each word in a span, keep tags inline
+    function buildWordSpans(html) {
+      // Tokenise into tags and text chunks
+      const tokens = [];
+      const re = /(<[^>]+>)|([^<]+)/g;
+      let m;
+      while ((m = re.exec(html)) !== null) {
+        if (m[1]) tokens.push({ tag: true, val: m[1] });
+        else tokens.push({ tag: false, val: m[2] });
+      }
+
+      let out = '';
+      tokens.forEach(tok => {
+        if (tok.tag) { out += tok.val; return; }
+        // Split text on spaces, wrapping each word
+        tok.val.split(/(\s+)/).forEach(part => {
+          if (/^\s+$/.test(part)) { out += part; }
+          else if (part) { out += `<span class="word">${part}</span>`; }
+        });
+      });
+      return out;
+    }
+
+    target.innerHTML = buildWordSpans(rawText);
+
+    const words = target.querySelectorAll('.word');
+    const STAGGER = 55; // ms between each word
+
+    words.forEach((word, i) => {
+      setTimeout(() => word.classList.add('visible'), 300 + i * STAGGER);
+    });
+
+    // Ripple effect on social buttons
+    document.querySelectorAll('.about-social a').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+  });
+</script>
+
 </body>
 </html>
