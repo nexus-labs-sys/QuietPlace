@@ -34,38 +34,6 @@
     #bg-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; transition: opacity 0.8s ease; }
     #bg-canvas.hidden { opacity: 0; }
 
-    /* ── VISUALIZER STRIP ── */
-    #viz-panel {
-      height: 0; overflow: hidden; flex-shrink: 0;
-      border-top: 1px solid transparent;
-      background: rgba(4,4,14,0.96);
-      backdrop-filter: blur(20px);
-      transition: height 0.45s cubic-bezier(0.4,0,0.2,1), border-color 0.45s, opacity 0.4s;
-      opacity: 0; position: relative; z-index: 3;
-    }
-    #viz-panel.open { height: 140px; border-top-color: var(--border); opacity: 1; }
-    body.layout-bottom #viz-panel.open { height: 120px; }
-    body.deep-mode #viz-panel, body.deep-work-active #viz-panel { display: none; }
-    #viz-canvas { width: 100%; height: 100%; display: block; pointer-events: none; }
-
-    #viz-btn {
-      width: 34px; height: 34px; border-radius: 9px;
-      background: var(--surface); border: 1px solid var(--border);
-      color: var(--muted); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s; position: relative;
-    }
-    #viz-btn:hover { background: rgba(255,255,255,0.09); color: var(--text); }
-    #viz-btn.active { background: rgba(127,163,255,0.12); border-color: rgba(127,163,255,0.4); color: var(--accent); }
-    #viz-btn .layout-tooltip {
-      position: absolute; top: 42px; right: 0;
-      font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase;
-      background: rgba(8,8,20,0.92); border: 1px solid var(--border);
-      border-radius: 6px; padding: 4px 8px; white-space: nowrap;
-      color: var(--muted); pointer-events: none; opacity: 0; transition: opacity 0.2s;
-    }
-    #viz-btn:hover .layout-tooltip { opacity: 1; }
-
     #yt-player-wrap { position: fixed; left: -400px; bottom: -400px; width: 200px; height: 112px; z-index: -1; pointer-events: none; overflow: hidden; }
     .shell { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
@@ -88,7 +56,7 @@
     .nav-center { font-family: 'Cormorant Garamond', serif; font-size: 1rem; letter-spacing: 5px; text-transform: uppercase; color: var(--muted); text-align: center; }
     .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 
-    /* ── SAVE PROGRESS BUTTON (new) ── */
+    /* ── SAVE PROGRESS BUTTON ── */
     #save-btn {
       font-size: 0.68rem; letter-spacing: 1.8px; text-transform: uppercase;
       color: var(--muted);
@@ -104,19 +72,10 @@
       border-color: rgba(127,163,255,0.3);
       background: rgba(127,163,255,0.06);
     }
-    /* Synced state */
     #save-btn.synced { color: #7fd4a0; border-color: rgba(127,212,160,0.3); }
-    #save-btn.synced::before {
-      content: '✓';
-      font-size: 9px;
-    }
-    /* Pulse when actively syncing */
+    #save-btn.synced::before { content: '✓'; font-size: 9px; }
     #save-btn.syncing { pointer-events: none; opacity: 0.7; }
-    #save-dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--border); flex-shrink: 0;
-      transition: background 0.4s;
-    }
+    #save-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.4s; }
     #save-btn.synced #save-dot { background: #7fd4a0; box-shadow: 0 0 4px #7fd4a0; }
     #save-btn.syncing #save-dot { background: var(--accent); animation: dot-blink 1s ease infinite; }
     @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
@@ -441,7 +400,6 @@
     </div>
     <div class="nav-center">Focus</div>
     <div class="nav-right">
-      <!-- ── NEW: Save Progress button ── -->
       <button id="save-btn" onclick="handleSaveProgress()" title="Save your focus data">
         <span id="save-dot"></span>
         <span id="save-label">Save Progress</span>
@@ -450,18 +408,6 @@
       <button id="layout-btn" onclick="cycleLayout()" title="">
         <span id="layout-icon">⊟</span>
         <span class="layout-tooltip" id="layout-tip">Switch to bottom bar</span>
-      </button>
-      <button id="viz-btn" onclick="toggleVisualizer()" title="Music Visualizer">
-        <span id="viz-icon">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block">
-            <rect x="1" y="9" width="2" height="6" rx="1" fill="currentColor" opacity=".5"/>
-            <rect x="4.5" y="5" width="2" height="10" rx="1" fill="currentColor" opacity=".7"/>
-            <rect x="8" y="2" width="2" height="13" rx="1" fill="currentColor"/>
-            <rect x="11.5" y="6" width="2" height="9" rx="1" fill="currentColor" opacity=".7"/>
-            <rect x="13" y="4" width="2" height="7" rx="1" fill="currentColor" opacity=".5"/>
-          </svg>
-        </span>
-        <span class="layout-tooltip">Music Visualizer</span>
       </button>
       <button id="deep-btn" onclick="toggleDeep()">✦ Deep Mode</button>
     </div>
@@ -660,11 +606,6 @@
       </div>
     </div>
 
-    <!-- VISUALIZER -->
-    <div id="viz-panel">
-      <canvas id="viz-canvas"></canvas>
-    </div>
-
   </div>
 </div>
 
@@ -679,9 +620,6 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  /* ─────────────────────────────────────────────
-     🔧 REPLACE WITH YOUR FIREBASE CONFIG
-  ───────────────────────────────────────────── */
   const firebaseConfig = {
     apiKey:            "YOUR_API_KEY",
     authDomain:        "YOUR_PROJECT.firebaseapp.com",
@@ -695,7 +633,6 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
-  /* ── Auth state: update save button appearance ── */
   onAuthStateChanged(auth, user => {
     window.__qp_user = user || null;
     const btn   = document.getElementById('save-btn');
@@ -710,16 +647,14 @@
     }
   });
 
-  /* ── Push stats to Firestore — called after every session ── */
   window.__qp_pushCloud = async function () {
     const user = window.__qp_user;
-    if (!user) return; // guest — skip
+    if (!user) return;
 
     const dateKey = new Date().toISOString().slice(0, 10);
     const TODAY   = new Date().toDateString();
 
     try {
-      /* Today stats */
       const stats = JSON.parse(localStorage.getItem('qp_focus_stats') || '{}');
       if (stats.date === TODAY) {
         await setDoc(doc(db, 'users', user.uid, 'history', dateKey), {
@@ -729,7 +664,6 @@
         }, { merge: true });
       }
 
-      /* Streak */
       const streak = JSON.parse(localStorage.getItem('qp_streak') || '{}');
       await setDoc(doc(db, 'users', user.uid, 'data', 'streak'), {
         streak:   streak.streak   || 0,
@@ -738,7 +672,6 @@
         updatedAt: serverTimestamp()
       }, { merge: true });
 
-      /* Brief "synced" pulse on save button */
       const btn = document.getElementById('save-btn');
       btn.classList.add('syncing');
       setTimeout(() => btn.classList.remove('syncing'), 1200);
@@ -756,11 +689,9 @@
 function handleSaveProgress() {
   const user = window.__qp_user;
   if (user) {
-    /* Already signed in — push cloud sync immediately */
     window.__qp_pushCloud?.();
     showNotify('✦ Progress synced to cloud.');
   } else {
-    /* Not signed in — go to login, come back here */
     location.href = 'login.html?from=' + encodeURIComponent(location.pathname + location.search);
   }
 }
@@ -1180,7 +1111,6 @@ function onSessionEnd(){
   if(deepWorkActive){exitDeepWork();showNotify('✦ Deep Work complete. Remarkable.');return;}
   if(currentMode==='focus'||currentMode==='sixty'){
     pomodoroInCycle++;todaySessions++;syncStats();updateDots();saveStats();checkStreak();
-    /* Auto-push to cloud after each completed session */
     window.__qp_pushCloud?.();
     if(pomodoroInCycle>=4){pomodoroInCycle=0;showNotify("✦ 4 sessions. Long break earned.");switchMode('long');}
     else{showNotify("✦ Session complete. Short break.");switchMode('break');}
@@ -1231,7 +1161,6 @@ function exitDeepWork(){
   document.getElementById('deep-work-status').classList.remove('visible');
   document.getElementById('main-grid').classList.remove('panel-hidden-side');
   document.getElementById('side-panel').classList.remove('deep-hidden');
-  /* Push stats when exiting deep work */
   saveStats(); window.__qp_pushCloud?.();
   switchMode('focus');showNotify('✦ Deep Work ended. Welcome back.');
 }
@@ -1308,86 +1237,6 @@ function renderStreak(s,h){
 }
 
 loadStats();loadStreak();updateDisplay();
-
-/* ═══════════════════════════════════════════════
-   MUSIC VISUALIZER
-═══════════════════════════════════════════════ */
-const vizPanel  = document.getElementById('viz-panel');
-const vizCanvas = document.getElementById('viz-canvas');
-const vizCtx    = vizCanvas.getContext('2d');
-let vizActive   = false, vizRaf = null, vizT = 0;
-
-function smoothNoise(t, freq = 1) {
-  const i = Math.floor(t * freq), f = (t * freq) - i;
-  const s = f * f * (3 - 2 * f);
-  const a = Math.sin(i * 127.1 + 311.7) * 43758.5453;
-  const b = Math.sin((i+1) * 127.1 + 311.7) * 43758.5453;
-  return (a - Math.floor(a)) * (1-s) + (b - Math.floor(b)) * s;
-}
-function fbm(t, oct = 4) {
-  let v = 0, amp = 0.5, freq = 1;
-  for (let o = 0; o < oct; o++) { v += smoothNoise(t, freq) * amp; freq *= 2.1; amp *= 0.5; }
-  return v;
-}
-
-function resizeViz() {
-  vizCanvas.width  = vizPanel.clientWidth  || window.innerWidth;
-  vizCanvas.height = vizPanel.clientHeight || 140;
-}
-window.addEventListener('resize', () => { if (vizActive) resizeViz(); });
-
-function toggleVisualizer() {
-  vizActive = !vizActive;
-  document.getElementById('viz-btn').classList.toggle('active', vizActive);
-  vizPanel.classList.toggle('open', vizActive);
-  if (vizActive) { setTimeout(() => { resizeViz(); if (!vizRaf) drawViz(); }, 50); showNotify('✦ Visualizer on.'); }
-  else { showNotify('✦ Visualizer off.'); }
-}
-
-function drawViz() {
-  vizRaf = requestAnimationFrame(drawViz);
-  if (!vizActive) { vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height); return; }
-  const W = vizCanvas.width, H = vizCanvas.height;
-  const playing = ytPlaying;
-  vizT += 0.007 * (playing ? 1 : 0.18);
-  vizCtx.clearRect(0, 0, W, H);
-  const PAL = {focus:['#7fa3ff','#b6c8ff','#4460cc'],break:['#7fd4a0','#a8edbc','#3a9060'],long:['#f4a97f','#f9cba8','#b06030'],sixty:['#fbbf24','#fde68a','#a07010'],deep:['#c084fc','#e0b4ff','#7030b8']};
-  const [c1, c2, c3] = PAL[currentMode] || PAL.focus;
-  const BAR_N = 80, BAR_W = W / BAR_N, MAX_BH = H * 0.88;
-  for (let i = 0; i < BAR_N; i++) {
-    const noise = fbm(vizT + i * 0.16, 4);
-    const amp   = playing ? (0.18 + noise * 0.82) : (0.03 + noise * 0.1);
-    const bH = amp * MAX_BH, x = i * BAR_W, y = H - bH;
-    const g = vizCtx.createLinearGradient(x, H, x, y);
-    g.addColorStop(0, c1+'00'); g.addColorStop(0.35, c1+'66'); g.addColorStop(0.75, c2+'bb'); g.addColorStop(1, c2+'ff');
-    vizCtx.fillStyle = g; vizCtx.beginPath();
-    if (vizCtx.roundRect) vizCtx.roundRect(x+0.5, y, BAR_W-1, bH, [2,2,0,0]); else vizCtx.rect(x+0.5, y, BAR_W-1, bH);
-    vizCtx.fill();
-    if (playing && bH > 8) { vizCtx.fillStyle = c2+'ee'; vizCtx.beginPath(); vizCtx.arc(x+BAR_W/2, y+1.5, 1.5, 0, Math.PI*2); vizCtx.fill(); }
-  }
-  for (let i = 0; i < BAR_N; i++) {
-    const noise = fbm(vizT + i * 0.16 + 500, 3);
-    const amp = playing ? (0.08 + noise * 0.28) : (0.015 + noise * 0.05);
-    const bH = amp * MAX_BH * 0.45, x = i * BAR_W;
-    const g = vizCtx.createLinearGradient(x, 0, x, bH);
-    g.addColorStop(0, c3+'99'); g.addColorStop(0.6, c1+'33'); g.addColorStop(1, c1+'00');
-    vizCtx.fillStyle = g; vizCtx.beginPath();
-    if (vizCtx.roundRect) vizCtx.roundRect(x+0.5, 0, BAR_W-1, bH, [0,0,2,2]); else vizCtx.rect(x+0.5, 0, BAR_W-1, bH);
-    vizCtx.fill();
-  }
-  const wAmp = playing ? H * 0.14 : H * 0.03, midY = H * 0.5;
-  vizCtx.beginPath();
-  for (let xi = 0; xi <= W; xi += 2) {
-    const yn = midY + (fbm(vizT * 0.65 + xi / W * 7, 5) - 0.5) * 2 * wAmp;
-    xi === 0 ? vizCtx.moveTo(xi, yn) : vizCtx.lineTo(xi, yn);
-  }
-  const wg = vizCtx.createLinearGradient(0, 0, W, 0);
-  wg.addColorStop(0, c1+'00'); wg.addColorStop(0.15, c2+'55'); wg.addColorStop(0.5, c2+(playing?'cc':'44')); wg.addColorStop(0.85, c2+'55'); wg.addColorStop(1, c1+'00');
-  vizCtx.strokeStyle = wg; vizCtx.lineWidth = playing ? 1.8 : 1; vizCtx.stroke();
-  const gBase = vizCtx.createLinearGradient(0, 0, W, 0);
-  gBase.addColorStop(0, c1+'00'); gBase.addColorStop(0.3, c1+(playing?'44':'18')); gBase.addColorStop(0.5, c2+(playing?'88':'22')); gBase.addColorStop(0.7, c1+(playing?'44':'18')); gBase.addColorStop(1, c1+'00');
-  vizCtx.fillStyle = gBase; vizCtx.fillRect(0, H-2, W, 2);
-}
 </script>
 </body>
 </html>
