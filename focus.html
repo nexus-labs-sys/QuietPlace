@@ -1759,17 +1759,21 @@ function loadYTUrlBp() {
   loadYTUrl();
 }
 
+/* ══════════════════════════════════════════════════════
+   Firebase placeholder — swap in your config
+══════════════════════════════════════════════════════ */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "quiet-place-3b3cb.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "quiet-place-3b3cb.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "1:1018921272941:web:6a598c3704378e2f256164"
+  apiKey: "AIzaSyDwZRbkuB6P8Tj-rjE2vpu01Ha4LccN1UI",
+  authDomain: "quiet-place-3b3cb.firebaseapp.com",
+  projectId: "quiet-place-3b3cb",
+  storageBucket: "quiet-place-3b3cb.firebasestorage.app",
+  messagingSenderId: "1018921272941",
+  appId: "1:1018921272941:web:6a598c3704378e2f256164",
+  measurementId: "G-P32BNTE1MN"
 };
 
 const app  = initializeApp(firebaseConfig);
