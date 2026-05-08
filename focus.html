@@ -34,57 +34,7 @@
     #bg-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; transition: opacity 0.8s ease; }
     #bg-canvas.hidden { opacity: 0; }
 
-    /* ── VISUALIZER STRIP — sits below everything, in-flow ── */
-    #viz-panel {
-      height: 0;
-      overflow: hidden;
-      flex-shrink: 0;
-      border-top: 1px solid transparent;
-      background: rgba(4,4,14,0.96);
-      backdrop-filter: blur(20px);
-      transition: height 0.45s cubic-bezier(0.4,0,0.2,1),
-                  border-color 0.45s, opacity 0.4s;
-      opacity: 0;
-      position: relative;
-      z-index: 3;
-    }
-    #viz-panel.open {
-      height: 140px;
-      border-top-color: var(--border);
-      opacity: 1;
-    }
-    body.layout-bottom #viz-panel.open { height: 120px; }
-    /* hide in deep mode */
-    body.deep-mode #viz-panel,
-    body.deep-work-active #viz-panel { display: none; }
-
-    #viz-canvas {
-      width: 100%; height: 100%;
-      display: block; pointer-events: none;
-    }
-
-    /* Viz button */
-    #viz-btn {
-      width: 34px; height: 34px; border-radius: 9px;
-      background: var(--surface); border: 1px solid var(--border);
-      color: var(--muted); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s; position: relative;
-    }
-    #viz-btn:hover { background: rgba(255,255,255,0.09); color: var(--text); }
-    #viz-btn.active { background: rgba(127,163,255,0.12); border-color: rgba(127,163,255,0.4); color: var(--accent); }
-    #viz-btn .layout-tooltip {
-      position: absolute; top: 42px; right: 0;
-      font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase;
-      background: rgba(8,8,20,0.92); border: 1px solid var(--border);
-      border-radius: 6px; padding: 4px 8px; white-space: nowrap;
-      color: var(--muted); pointer-events: none; opacity: 0; transition: opacity 0.2s;
-    }
-    #viz-btn:hover .layout-tooltip { opacity: 1; }
-
-    /* Hidden YouTube player */
     #yt-player-wrap { position: fixed; left: -400px; bottom: -400px; width: 200px; height: 112px; z-index: -1; pointer-events: none; overflow: hidden; }
-
     .shell { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
 
     /* ── NAV ── */
@@ -106,7 +56,31 @@
     .nav-center { font-family: 'Cormorant Garamond', serif; font-size: 1rem; letter-spacing: 5px; text-transform: uppercase; color: var(--muted); text-align: center; }
     .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 
-    /* Panel layout toggle button */
+    /* ── SAVE PROGRESS BUTTON ── */
+    #save-btn {
+      font-size: 0.68rem; letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 40px; padding: 7px 14px;
+      cursor: pointer; transition: all 0.3s;
+      display: flex; align-items: center; gap: 6px;
+      white-space: nowrap; position: relative;
+    }
+    #save-btn:hover {
+      color: var(--accent);
+      border-color: rgba(127,163,255,0.3);
+      background: rgba(127,163,255,0.06);
+    }
+    #save-btn.synced { color: #7fd4a0; border-color: rgba(127,212,160,0.3); }
+    #save-btn.synced::before { content: '✓'; font-size: 9px; }
+    #save-btn.syncing { pointer-events: none; opacity: 0.7; }
+    #save-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.4s; }
+    #save-btn.synced #save-dot { background: #7fd4a0; box-shadow: 0 0 4px #7fd4a0; }
+    #save-btn.syncing #save-dot { background: var(--accent); animation: dot-blink 1s ease infinite; }
+    @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* Layout toggle */
     #layout-btn {
       width: 34px; height: 34px; border-radius: 9px;
       background: var(--surface); border: 1px solid var(--border);
@@ -133,13 +107,8 @@
     body.deep-work-active #deep-exit-btn { opacity: 0 !important; pointer-events: none !important; }
 
     /* ── MAIN AREA ── */
-    /* layout modes: 'side' (default) | 'bottom' | 'hidden' */
-    .workspace {
-      flex: 1; display: flex; flex-direction: column;
-      min-height: 0;
-    }
+    .workspace { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 
-    /* Side layout */
     #main-grid {
       flex: 1; display: grid;
       grid-template-columns: 1fr var(--panel-w);
@@ -151,7 +120,7 @@
     body.layout-bottom #main-grid { grid-template-columns: 1fr; grid-template-rows: 1fr; }
     body.layout-hidden #main-grid { grid-template-columns: 1fr; }
 
-    /* ── CENTER COLUMN ── */
+    /* CENTER COL */
     .center-col {
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
@@ -165,7 +134,7 @@
     body.layout-hidden .center-col,
     body.deep-mode .center-col { border-right-color: transparent; }
 
-    /* ── SIDE PANEL ── */
+    /* SIDE PANEL */
     .side-panel {
       display: flex; flex-direction: column;
       padding: 28px 22px; gap: 22px;
@@ -179,26 +148,19 @@
     body.layout-bottom .side-panel,
     body.layout-hidden .side-panel { display: none; }
 
-    /* ══════════════════════════════════════════════
-       BOTTOM PANEL
-    ══════════════════════════════════════════════ */
+    /* BOTTOM PANEL */
     #bottom-panel {
       height: var(--bottom-h);
       border-top: 1px solid var(--border);
       backdrop-filter: blur(16px);
       background: rgba(6,6,16,0.92);
-      display: none;
-      flex-direction: row;
-      gap: 0;
-      overflow: visible;
-      flex-shrink: 0;
+      display: none; flex-direction: row;
+      gap: 0; overflow: visible; flex-shrink: 0;
       transition: height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
     }
     body.layout-bottom #bottom-panel { display: flex; }
-    body.deep-mode #bottom-panel,
-    body.layout-hidden #bottom-panel { display: none; }
+    body.deep-mode #bottom-panel, body.layout-hidden #bottom-panel { display: none; }
 
-    /* 3 equal columns inside bottom bar */
     .bp-col {
       flex: 1; padding: 18px 22px 20px;
       border-right: 1px solid var(--border);
@@ -207,144 +169,68 @@
       overflow-y: auto; overflow-x: hidden;
     }
     .bp-col:last-child { border-right: none; }
+    .bp-col-head { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
 
-    /* Col header */
-    .bp-col-head {
-      font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--muted); flex-shrink: 0;
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    /* ══════════════════════════
-       BOTTOM — COL 1: MUSIC
-    ══════════════════════════ */
-    .bp-music-top {
-      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-    }
-    .bp-track-art {
-      width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
-      background: linear-gradient(135deg,#1a1a2e,#16213e);
-      border: 1px solid var(--border); overflow: hidden;
-      position: relative; display: flex; align-items: center; justify-content: center;
-    }
+    /* BOTTOM COL 1 MUSIC */
+    .bp-music-top { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .bp-track-art { width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0; background: linear-gradient(135deg,#1a1a2e,#16213e); border: 1px solid var(--border); overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
     .bp-track-art img { width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0;transition:opacity .5s; }
     .bp-track-art img.loaded { opacity:1; }
     .bp-track-art .bp-art-fb { font-size:16px;position:relative;z-index:1;transition:opacity .4s; }
     .bp-track-art.has-thumb .bp-art-fb { opacity:0; }
     .bp-track-art.playing::after { content:'';position:absolute;inset:0;background:rgba(127,163,255,.12);animation:pulse-art 2s ease-in-out infinite;z-index:2; }
     @keyframes pulse-art { 0%,100%{opacity:.3} 50%{opacity:1} }
-
     .bp-track-info { flex:1; min-width:0; }
     .bp-track-name { font-size:0.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;transition:opacity .3s; }
     .bp-track-name.fade { opacity:.25; }
     .bp-track-artist { font-size:0.68rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-
-    .bp-play-btn {
-      width:32px;height:32px;border-radius:50%;flex-shrink:0;
-      background:rgba(127,163,255,.1);border:1px solid rgba(127,163,255,.25);
-      color:var(--accent);cursor:pointer;font-size:12px;
-      display:flex;align-items:center;justify-content:center;transition:all .3s;
-    }
+    .bp-play-btn { width:32px;height:32px;border-radius:50%;flex-shrink:0;background:rgba(127,163,255,.1);border:1px solid rgba(127,163,255,.25);color:var(--accent);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .3s; }
     .bp-play-btn:hover { background:rgba(127,163,255,.22); }
     .bp-play-btn:disabled { opacity:.3;cursor:default;pointer-events:none; }
-
-    /* url input compact */
     .bp-url-row { display:flex;align-items:center;gap:6px;flex-shrink:0; }
-    .bp-url-row input {
-      flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;
-      outline:none;padding:5px 9px;font-family:inherit;font-size:0.65rem;font-weight:300;
-      color:var(--muted);caret-color:var(--accent);min-width:0;
-    }
+    .bp-url-row input { flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;outline:none;padding:5px 9px;font-family:inherit;font-size:0.65rem;font-weight:300;color:var(--muted);caret-color:var(--accent);min-width:0; }
     .bp-url-row input::placeholder { color:rgba(232,234,240,.2); }
     .bp-url-row input:focus { color:var(--text);border-color:rgba(127,163,255,.3); }
-    .bp-url-load-btn {
-      flex-shrink:0;font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;
-      color:var(--accent);background:rgba(127,163,255,.08);
-      border:1px solid rgba(127,163,255,.22);border-radius:12px;
-      padding:4px 10px;cursor:pointer;transition:all .3s;white-space:nowrap;
-    }
+    .bp-url-load-btn { flex-shrink:0;font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);background:rgba(127,163,255,.08);border:1px solid rgba(127,163,255,.22);border-radius:12px;padding:4px 10px;cursor:pointer;transition:all .3s;white-space:nowrap; }
     .bp-url-load-btn:hover { background:rgba(127,163,255,.18); }
-
     .bp-music-controls { display:flex;align-items:center;gap:6px;flex-shrink:0; }
-    .bp-nav-btn {
-      width:24px;height:24px;border-radius:50%;background:transparent;
-      border:1px solid var(--border);color:var(--muted);cursor:pointer;
-      font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .25s;
-    }
+    .bp-nav-btn { width:24px;height:24px;border-radius:50%;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .25s; }
     .bp-nav-btn:hover { background:rgba(255,255,255,.07);color:var(--text); }
     .bp-nav-btn:disabled { opacity:.2;pointer-events:none; }
-
     .bp-progress-wrap { flex-shrink:0; }
     .bp-progress-bar { width:100%;height:2px;border-radius:2px;background:var(--border);cursor:pointer;position:relative; }
     .bp-progress-bar:hover { height:3px; }
     .bp-progress-fill { height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0%;transition:width 1s linear;pointer-events:none; }
-
     .bp-status { display:flex;align-items:center;gap:5px;flex-shrink:0; }
     .bp-status-dot { width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .4s; }
     .bp-status-dot.live { background:#7fd4a0;box-shadow:0 0 4px #7fd4a0;animation:dot-blink 2s ease-in-out infinite; }
     .bp-status-dot.error { background:#f4a97f; }
     @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.35} }
     .bp-status-txt { font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-
     .bp-vol-row { display:flex;align-items:center;gap:8px;flex-shrink:0; }
     .bp-vol-icon { font-size:11px;color:var(--muted); }
     .bp-vol-row input[type=range] { flex:1;-webkit-appearance:none;appearance:none;height:2px;border-radius:2px;cursor:pointer;background:linear-gradient(to right,var(--accent2) var(--pct,70%),var(--border) var(--pct,70%)); }
     .bp-vol-row input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 4px var(--accent2); }
 
-    /* ══════════════════════════
-       BOTTOM — COL 2: BG + AMBIENT
-    ══════════════════════════ */
+    /* BOTTOM COL 2 */
     .bp-bg-chips { display:flex;flex-wrap:wrap;gap:5px; }
-    .bp-chip {
-      font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;
-      padding:4px 10px;border-radius:20px;cursor:pointer;
-      background:var(--surface);border:1px solid var(--border);
-      color:var(--muted);transition:all .3s;white-space:nowrap;
-    }
+    .bp-chip { font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--muted);transition:all .3s;white-space:nowrap; }
     .bp-chip:hover { background:rgba(255,255,255,.08);color:var(--text); }
     .bp-chip.active { background:rgba(127,163,255,.12);border-color:rgba(127,163,255,.4);color:var(--accent); }
     .bp-chip.none-chip.active { background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:var(--text); }
-
-    /* Ambient file-based sound chips */
     .bp-amb-row { display:flex;align-items:center;gap:6px;flex-wrap:wrap; }
-    .bp-amb-chip {
-      display:flex;align-items:center;gap:5px;
-      font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;
-      padding:5px 10px;border-radius:20px;cursor:pointer;
-      background:var(--surface);border:1px solid var(--border);
-      color:var(--muted);transition:all .3s;white-space:nowrap;
-    }
+    .bp-amb-chip { display:flex;align-items:center;gap:5px;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:20px;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--muted);transition:all .3s;white-space:nowrap; }
     .bp-amb-chip:hover { background:rgba(255,255,255,.07);color:var(--text); }
     .bp-amb-chip.active { background:rgba(127,163,255,.1);border-color:rgba(127,163,255,.35);color:var(--accent); }
     .bp-amb-chip.playing { background:rgba(127,212,160,.1);border-color:rgba(127,212,160,.35);color:var(--break-color); }
     .bp-amb-icon { font-size:13px; }
-
-    /* Upload button for ambient */
-    .bp-upload-btn {
-      display:flex;align-items:center;gap:5px;
-      font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;
-      padding:5px 10px;border-radius:20px;cursor:pointer;
-      background:transparent;border:1px dashed rgba(255,255,255,.15);
-      color:rgba(232,234,240,.3);transition:all .3s;white-space:nowrap;
-    }
-    .bp-upload-btn:hover { border-color:rgba(255,255,255,.3);color:var(--muted); }
-
     .bp-amb-vol { display:flex;align-items:center;gap:7px;margin-top:2px; }
-    .bp-amb-vol-lbl { font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap; }
-    .bp-amb-vol input[type=range] { flex:1;-webkit-appearance:none;appearance:none;height:2px;border-radius:2px;cursor:pointer;background:linear-gradient(to right,var(--break-color) var(--apct,40%),var(--border) var(--apct,40%)); }
-    .bp-amb-vol input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;width:9px;height:9px;border-radius:50%;background:var(--break-color); }
 
-    /* col divider label */
-    .bp-divider { width:1px;background:var(--border);flex-shrink:0; margin:16px 0; }
-
-    /* ══════════════════════════
-       BOTTOM — COL 3: STATS + STREAK
-    ══════════════════════════ */
+    /* BOTTOM COL 3 */
     .bp-stats-row { display:flex;gap:10px;flex-shrink:0; }
     .bp-stat-card { flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px;text-align:center; }
     .bp-stat-val { font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;color:var(--accent);line-height:1; }
     .bp-stat-lbl { font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:3px; }
-
     .bp-streak-row { display:flex;align-items:center;gap:10px;flex-shrink:0; }
     .bp-streak-flame { font-size:1.4rem; }
     .bp-streak-val { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#f4a97f;line-height:1; }
@@ -353,9 +239,7 @@
     .bp-day-dot { width:17px;height:17px;border-radius:4px;background:var(--border);font-size:7px;display:flex;align-items:center;justify-content:center;color:var(--muted); }
     .bp-day-dot.active { background:rgba(244,169,127,.22);color:#f4a97f;border:1px solid rgba(244,169,127,.35); }
 
-    /* ══════════════════════════════════════════════
-       SIDE PANEL SECTIONS (reused in side mode)
-    ══════════════════════════════════════════════ */
+    /* SIDE PANEL SECTIONS */
     .panel-section h3 { font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:11px; }
     .music-card { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden; }
     .yt-input-row { display:flex;align-items:center;padding:10px 13px;border-bottom:1px solid var(--border); }
@@ -400,32 +284,18 @@
     .bg-chip:hover { background:rgba(255,255,255,.08);color:var(--text); }
     .bg-chip.active { background:rgba(127,163,255,.12);border-color:rgba(127,163,255,.4);color:var(--accent); }
     .bg-chip.none-chip.active { background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:var(--text); }
-
-    /* Side ambient — file-based */
     .amb-file-list { display:flex;flex-direction:column;gap:6px; }
-    .amb-file-item {
-      display:flex;align-items:center;gap:9px;
-      background:var(--surface);border:1px solid var(--border);border-radius:11px;
-      padding:8px 12px;cursor:pointer;transition:all .3s;
-    }
+    .amb-file-item { display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:8px 12px;cursor:pointer;transition:all .3s; }
     .amb-file-item:hover { background:rgba(255,255,255,.07); }
     .amb-file-item.playing { background:rgba(127,212,160,.08);border-color:rgba(127,212,160,.3); }
     .amb-file-name { flex:1;font-size:0.75rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .3s; }
     .amb-file-item.playing .amb-file-name { color:var(--break-color); }
     .amb-file-icon { font-size:15px;flex-shrink:0; }
     .amb-file-stop { flex-shrink:0;font-size:10px;color:var(--muted);opacity:.5; }
-    .amb-upload-btn {
-      display:flex;align-items:center;justify-content:center;gap:7px;
-      background:transparent;border:1px dashed rgba(255,255,255,.14);border-radius:11px;
-      padding:9px 12px;cursor:pointer;transition:all .3s;
-      font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(232,234,240,.3);
-    }
-    .amb-upload-btn:hover { border-color:rgba(255,255,255,.28);color:var(--muted); }
     .amb-vol-row { display:flex;align-items:center;gap:8px;margin-top:4px; }
     .amb-vol-lbl { font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);flex-shrink:0; }
     .amb-vol-row input[type=range] { flex:1;background:linear-gradient(to right,var(--break-color) var(--apct,40%),var(--border) var(--apct,40%)); }
     .amb-vol-row input[type=range]::-webkit-slider-thumb { background:var(--break-color);box-shadow:0 0 5px var(--break-color); }
-
     .stats-row { display:flex;gap:9px; }
     .stat-card { flex:1;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:13px;text-align:center; }
     .stat-val { font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;color:var(--accent);line-height:1; }
@@ -438,7 +308,7 @@
     .day-dot { width:18px;height:18px;border-radius:4px;background:var(--border);font-size:7px;display:flex;align-items:center;justify-content:center;color:var(--muted); }
     .day-dot.active { background:rgba(244,169,127,.22);color:#f4a97f;border:1px solid rgba(244,169,127,.35); }
 
-    /* ── PILLS & RING & CONTROLS (unchanged) ── */
+    /* TIMER */
     .session-pills { display:flex;gap:9px;margin-bottom:40px;flex-wrap:wrap;justify-content:center;transition:opacity .5s,transform .5s; }
     .session-pills.fade-out { opacity:0;pointer-events:none;transform:translateY(-6px); }
     .pill { font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border-radius:40px;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--muted);transition:all .3s; }
@@ -489,7 +359,6 @@
     #dw-exit-btn { font-size:0.63rem;letter-spacing:2px;text-transform:uppercase;color:rgba(232,234,240,.35);background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:40px;padding:6px 16px;cursor:pointer;transition:all .3s; }
     #dw-exit-btn:hover { color:var(--muted);border-color:rgba(255,255,255,.18); }
 
-    /* Toast */
     #notify { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(14,14,28,.95);border:1px solid var(--border);backdrop-filter:blur(20px);border-radius:40px;padding:11px 24px;color:var(--text);z-index:200;opacity:0;transition:all .5s;pointer-events:none;white-space:nowrap;font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:1px; }
     #notify.show { opacity:1;transform:translateX(-50%) translateY(0); }
 
@@ -531,22 +400,14 @@
     </div>
     <div class="nav-center">Focus</div>
     <div class="nav-right">
-      <!-- Layout toggle cycles: side → bottom → hidden → side -->
+      <button id="save-btn" onclick="handleSaveProgress()" title="Save your focus data">
+        <span id="save-dot"></span>
+        <span id="save-label">Save Progress</span>
+      </button>
+
       <button id="layout-btn" onclick="cycleLayout()" title="">
         <span id="layout-icon">⊟</span>
         <span class="layout-tooltip" id="layout-tip">Switch to bottom bar</span>
-      </button>
-      <button id="viz-btn" onclick="toggleVisualizer()" title="Music Visualizer">
-        <span id="viz-icon">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block">
-            <rect x="1" y="9" width="2" height="6" rx="1" fill="currentColor" opacity=".5"/>
-            <rect x="4.5" y="5" width="2" height="10" rx="1" fill="currentColor" opacity=".7"/>
-            <rect x="8" y="2" width="2" height="13" rx="1" fill="currentColor"/>
-            <rect x="11.5" y="6" width="2" height="9" rx="1" fill="currentColor" opacity=".7"/>
-            <rect x="13" y="4" width="2" height="7" rx="1" fill="currentColor" opacity=".5"/>
-          </svg>
-        </span>
-        <span class="layout-tooltip">Music Visualizer</span>
       </button>
       <button id="deep-btn" onclick="toggleDeep()">✦ Deep Mode</button>
     </div>
@@ -673,23 +534,17 @@
           </div>
         </div>
 
-      </div><!-- /side-panel -->
-    </div><!-- /main-grid -->
+      </div>
+    </div>
 
-    <!-- ══════════════════════════════════════════
-         BOTTOM PANEL — 3 columns
-    ══════════════════════════════════════════ -->
+    <!-- BOTTOM PANEL -->
     <div id="bottom-panel">
-
-      <!-- COL 1 · MUSIC -->
       <div class="bp-col">
         <div class="bp-col-head">🎵 Music</div>
-
         <div class="bp-url-row">
           <input type="text" id="bp-yt-url" placeholder="YouTube playlist URL…" autocomplete="off" spellcheck="false">
           <button class="bp-url-load-btn" onclick="loadYTUrl('bottom')">Load ↵</button>
         </div>
-
         <div class="bp-music-top">
           <div class="bp-track-art" id="bp-track-art">
             <img id="bp-track-thumb" src="" alt="">
@@ -701,7 +556,6 @@
           </div>
           <button class="bp-play-btn" id="bp-music-toggle" onclick="ytTogglePlay()" disabled>▶</button>
         </div>
-
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="bp-music-controls">
             <button class="bp-nav-btn" id="bp-prev-btn" onclick="ytPrev()" disabled>⏮</button>
@@ -712,40 +566,34 @@
             <div class="bp-status-txt" id="bp-status-txt">Waiting</div>
           </div>
         </div>
-
         <div class="bp-progress-wrap">
           <div class="bp-progress-bar" id="bp-progress-bar" onclick="ytSeekBp(event)">
             <div class="bp-progress-fill" id="bp-progress-fill"></div>
           </div>
         </div>
-
         <div class="bp-vol-row">
           <span class="bp-vol-icon">♪</span>
           <input type="range" min="0" max="100" value="70" id="bp-vol-slider" oninput="ytSetVolumeBp(this.value)">
         </div>
       </div>
 
-      <!-- COL 2 · BACKGROUND + AMBIENT -->
       <div class="bp-col">
         <div class="bp-col-head">🌆 Background</div>
         <div class="bp-bg-chips" id="bp-bg-picker"></div>
-
         <div class="bp-col-head" style="margin-top:4px;">🔊 Ambient</div>
         <div class="bp-amb-row" id="bp-amb-chips"></div>
         <div class="bp-amb-vol" id="bp-amb-vol" style="display:none">
-          <span class="bp-amb-vol-lbl" style="font-size:.58rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap;">Amb vol</span>
+          <span style="font-size:.58rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);white-space:nowrap;">Amb vol</span>
           <input type="range" min="0" max="100" value="40" id="bp-amb-vol-slider" oninput="setAmbientVolumeBp(this.value)" style="flex:1;-webkit-appearance:none;appearance:none;height:2px;border-radius:2px;cursor:pointer;background:linear-gradient(to right,var(--break-color) 40%,var(--border) 40%)">
         </div>
       </div>
 
-      <!-- COL 3 · STATS + STREAK -->
       <div class="bp-col">
         <div class="bp-col-head">📊 Today's Focus</div>
         <div class="bp-stats-row">
           <div class="bp-stat-card"><div class="bp-stat-val" id="bp-stat-time">0</div><div class="bp-stat-lbl">Minutes</div></div>
           <div class="bp-stat-card"><div class="bp-stat-val" id="bp-stat-sessions">0</div><div class="bp-stat-lbl">Sessions</div></div>
         </div>
-
         <div class="bp-col-head" style="margin-top:4px;">🔥 Streak</div>
         <div class="bp-streak-row">
           <div class="bp-streak-flame">🔥</div>
@@ -756,33 +604,106 @@
           </div>
         </div>
       </div>
-
-    </div><!-- /bottom-panel -->
-
-    <!-- ══════════════════════════════════════════
-         VISUALIZER STRIP — slides up from bottom
-    ══════════════════════════════════════════ -->
-    <div id="viz-panel">
-      <canvas id="viz-canvas"></canvas>
     </div>
 
-  </div><!-- /workspace -->
-</div><!-- /shell -->
+  </div>
+</div>
 
 <button id="deep-exit-btn" onclick="toggleDeep()">✕ Exit Deep Mode</button>
 <div id="notify"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+
+<!-- Firebase (module) — cloud sync -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT.firebaseapp.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  onAuthStateChanged(auth, user => {
+    window.__qp_user = user || null;
+    const btn   = document.getElementById('save-btn');
+    const label = document.getElementById('save-label');
+    if (user) {
+      btn.classList.add('synced');
+      label.textContent = user.displayName?.split(' ')[0] || 'Synced';
+      btn.title = 'Signed in as ' + (user.email || user.displayName);
+    } else {
+      btn.classList.remove('synced');
+      label.textContent = 'Save Progress';
+    }
+  });
+
+  window.__qp_pushCloud = async function () {
+    const user = window.__qp_user;
+    if (!user) return;
+
+    const dateKey = new Date().toISOString().slice(0, 10);
+    const TODAY   = new Date().toDateString();
+
+    try {
+      const stats = JSON.parse(localStorage.getItem('qp_focus_stats') || '{}');
+      if (stats.date === TODAY) {
+        await setDoc(doc(db, 'users', user.uid, 'history', dateKey), {
+          minutes:  stats.minutes  || 0,
+          sessions: stats.sessions || 0,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      }
+
+      const streak = JSON.parse(localStorage.getItem('qp_streak') || '{}');
+      await setDoc(doc(db, 'users', user.uid, 'data', 'streak'), {
+        streak:   streak.streak   || 0,
+        lastDate: streak.lastDate || null,
+        history:  streak.history  || [],
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      const btn = document.getElementById('save-btn');
+      btn.classList.add('syncing');
+      setTimeout(() => btn.classList.remove('syncing'), 1200);
+
+    } catch (e) {
+      console.warn('Cloud push failed:', e);
+    }
+  };
+</script>
+
 <script>
-/* ══════════════════════════════════════════════════
-   GIF BACKGROUNDS — edit list below
-══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   SAVE PROGRESS button handler
+═══════════════════════════════════════════════ */
+function handleSaveProgress() {
+  const user = window.__qp_user;
+  if (user) {
+    window.__qp_pushCloud?.();
+    showNotify('✦ Progress synced to cloud.');
+  } else {
+    location.href = 'login.html?from=' + encodeURIComponent(location.pathname + location.search);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   GIF BACKGROUNDS
+═══════════════════════════════════════════════ */
 const GIF_BACKGROUNDS = [
-  'focus/night.gif',
-  'focus/warm.gif'
+  'night.gif',
+  'warm.gif'
 ];
 const GIF_OVERLAY_OPACITY = 0.62;
-
 const gifBgEl    = document.getElementById('gif-bg');
 const gifOverlay = document.getElementById('gif-overlay');
 const bgCanvas   = document.getElementById('bg-canvas');
@@ -831,7 +752,7 @@ function setGifBg(file) {
   showNotify('✦ Background changed.');
 }
 
-/* ── Particles ── */
+/* Particles */
 const bgCtx = bgCanvas.getContext('2d');
 let particles = [];
 function initCanvas() {
@@ -852,13 +773,13 @@ function drawBg() {
 }
 drawBg();
 
-/* ══════════════════════════════════════════════════
-   LAYOUT TOGGLE — cycles: side → bottom → hidden
-══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   LAYOUT TOGGLE
+═══════════════════════════════════════════════ */
 const LAYOUTS = ['layout-side', 'layout-bottom', 'layout-hidden'];
 const LAYOUT_ICONS = ['⊟', '⊠', '⊡'];
 const LAYOUT_TIPS  = ['Switch to bottom bar', 'Hide panel', 'Show side panel'];
-let layoutIdx = 0; // starts at side
+let layoutIdx = 0;
 
 function cycleLayout() {
   if (deepMode || deepWorkActive) return;
@@ -867,14 +788,13 @@ function cycleLayout() {
   document.body.classList.add(LAYOUTS[layoutIdx]);
   document.getElementById('layout-icon').textContent = LAYOUT_ICONS[layoutIdx];
   document.getElementById('layout-tip').textContent  = LAYOUT_TIPS[layoutIdx];
-  // sync stats display between panels
   syncStats();
   showNotify(layoutIdx===0?'✦ Side panel.':layoutIdx===1?'✦ Bottom bar.':'✦ Panel hidden.');
 }
 
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    YOUTUBE PLAYER
-══════════════════════════════════════════════════ */
+═══════════════════════════════════════════════ */
 let ytPlayer=null, ytReady=false, ytPlaying=false, ytLoaded=false;
 let ytVolume=70, ytProgressIv=null, ytPollIv=null, ytLastVid=null;
 
@@ -934,7 +854,6 @@ function parseYTUrl(raw) {
 function loadYTUrl(from) {
   if (!ytReady) { showNotify('⏳ Player initialising…'); return; }
   const inputId = from==='bottom' ? 'bp-yt-url' : 'yt-url-input';
-  // Sync both inputs
   const val = document.getElementById(inputId).value.trim();
   document.getElementById('yt-url-input').value = val;
   document.getElementById('bp-yt-url').value = val;
@@ -1032,39 +951,21 @@ function clearThumb(){
   ['track-thumb','bp-track-thumb'].forEach(id=>{const img=document.getElementById(id);if(!img)return;const art=img.closest('.track-art,.bp-track-art');img.src='';img.classList.remove('loaded');art?.classList.remove('has-thumb');});
 }
 
-/* ══════════════════════════════════════════════════
-   AMBIENT SOUNDS — EDIT THIS LIST
-   ──────────────────────────────────────────────────
-   Put your .mp3 / .wav files in the same folder
-   as focus.html, then add them here.
-
-   Each entry: { file: 'filename.mp3', label: 'Rain', icon: '🌧' }
-   Icon is optional — will be auto-guessed from the label if omitted.
-
-   Example:
-     const AMBIENT_SOUNDS = [
-       { file: 'rain.mp3',   label: 'Rain',   icon: '🌧' },
-       { file: 'cafe.mp3',   label: 'Café',   icon: '☕' },
-       { file: 'ocean.mp3',  label: 'Ocean',  icon: '🌊' },
-       { file: 'night.mp3',  label: 'Night',  icon: '🌙' },
-     ];
-══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   AMBIENT SOUNDS
+═══════════════════════════════════════════════ */
 const AMBIENT_SOUNDS = [
-  { file: 'rain.mp3',   label: 'Rain',   icon: '🌧' },
-  { file: 'cafe.mp3',   label: 'Café',   icon: '☕' },
-   { file: 'ocean.mp3',  label: 'Ocean',  icon: '🌊' },
-  { file: 'night.mp3',  label: 'Night',  icon: '🌙' },
+  { file: 'focus/rain.mp3',   label: 'Rain',   icon: '🌧' },
+  { file: 'focus/cafe.mp3',   label: 'Café',   icon: '☕' },
+  { file: 'focus/ocean.mp3',  label: 'Ocean',  icon: '🌊' },
+  { file: 'focus/night.mp3',  label: 'Night',  icon: '🌙' },
 ];
 
 let ambFiles = AMBIENT_SOUNDS.map(s => ({
-  name:    s.label,
-  file:    s.file,
-  icon:    s.icon || getAmbIcon(s.label),
-  audio:   null,
-  playing: false
+  name: s.label, file: s.file, icon: s.icon || getAmbIcon(s.label),
+  audio: null, playing: false
 }));
-let ambVolume = 40;
-let ambActive = null;
+let ambVolume = 40, ambActive = null;
 
 function getAmbIcon(name) {
   const n = (name||'').toLowerCase();
@@ -1080,11 +981,10 @@ function getAmbIcon(name) {
 }
 
 function renderAmbientFiles() {
-  /* Side panel list */
   const list = document.getElementById('amb-file-list');
   list.innerHTML = '';
   if (!ambFiles.length) {
-    list.innerHTML = '<div style="font-size:.68rem;color:var(--muted);font-style:italic;padding:4px 0;">No sounds added yet — see the AMBIENT_SOUNDS list in the JS.</div>';
+    list.innerHTML = '<div style="font-size:.68rem;color:var(--muted);font-style:italic;padding:4px 0;">No sounds — see AMBIENT_SOUNDS list.</div>';
   } else {
     ambFiles.forEach((f, i) => {
       const item = document.createElement('div');
@@ -1095,8 +995,6 @@ function renderAmbientFiles() {
     });
     document.getElementById('amb-vol-row').style.display = 'flex';
   }
-
-  /* Bottom panel chips */
   const chips = document.getElementById('bp-amb-chips');
   chips.innerHTML = '';
   if (!ambFiles.length) {
@@ -1118,18 +1016,11 @@ function toggleAmbFile(idx) {
   if (f.playing) { stopAmbFile(idx); }
   else { if (ambActive !== null && ambActive !== idx) stopAmbFile(ambActive); playAmbFile(idx); }
 }
-
 function playAmbFile(idx) {
   const f = ambFiles[idx];
   if (!f.audio) {
     f.audio = new Audio(f.file);
-    /* Loop manually via ended event — keeps playing until user taps stop */
-    f.audio.addEventListener('ended', () => {
-      if (f.playing) {
-        f.audio.currentTime = 0;
-        f.audio.play().catch(() => {});
-      }
-    });
+    f.audio.addEventListener('ended', () => { if (f.playing) { f.audio.currentTime = 0; f.audio.play().catch(()=>{}); } });
   }
   f.audio.volume = ambVolume / 100;
   f.audio.play().catch(() => showNotify('⚠ Could not play: ' + f.file));
@@ -1137,14 +1028,12 @@ function playAmbFile(idx) {
   renderAmbientFiles();
   showNotify(`✦ ${f.name} — now playing.`);
 }
-
 function stopAmbFile(idx) {
   const f = ambFiles[idx];
   if (f.audio) { f.audio.pause(); f.audio.currentTime = 0; }
   f.playing = false; if (ambActive === idx) ambActive = null;
   renderAmbientFiles();
 }
-
 function setAmbientVolume(v) {
   ambVolume = +v;
   document.getElementById('amb-vol-slider').style.setProperty('--apct', v + '%');
@@ -1161,14 +1050,11 @@ function setAmbientVolumeBp(v) {
   ambFiles.forEach(f => { if (f.audio) f.audio.volume = ambVolume / 100; });
 }
 
-/* Remove old upload handler — no longer needed */
-function handleAmbientUpload() {}
-
 renderAmbientFiles();
 
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    TIMER
-══════════════════════════════════════════════════ */
+═══════════════════════════════════════════════ */
 const MODES={
   focus:{label:'Focus Session',secs:25*60,color:'#7fa3ff'},
   break:{label:'Short Break',secs:5*60,color:'#7fd4a0'},
@@ -1225,6 +1111,7 @@ function onSessionEnd(){
   if(deepWorkActive){exitDeepWork();showNotify('✦ Deep Work complete. Remarkable.');return;}
   if(currentMode==='focus'||currentMode==='sixty'){
     pomodoroInCycle++;todaySessions++;syncStats();updateDots();saveStats();checkStreak();
+    window.__qp_pushCloud?.();
     if(pomodoroInCycle>=4){pomodoroInCycle=0;showNotify("✦ 4 sessions. Long break earned.");switchMode('long');}
     else{showNotify("✦ Session complete. Short break.");switchMode('break');}
   } else {showNotify("✦ Break over. Return to the work.");switchMode('focus');}
@@ -1237,7 +1124,6 @@ function showMsg(pool){
 }
 function updateDots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('done',i<pomodoroInCycle);}
 
-/* Sync stats to both panels */
 function syncStats(){
   document.getElementById('stat-time').textContent=todayMinutes;
   document.getElementById('stat-sessions').textContent=todaySessions;
@@ -1245,9 +1131,9 @@ function syncStats(){
   document.getElementById('bp-stat-sessions').textContent=todaySessions;
 }
 
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    DEEP WORK
-══════════════════════════════════════════════════ */
+═══════════════════════════════════════════════ */
 let deepMode=false;
 
 function enterDeepWork(){
@@ -1275,6 +1161,7 @@ function exitDeepWork(){
   document.getElementById('deep-work-status').classList.remove('visible');
   document.getElementById('main-grid').classList.remove('panel-hidden-side');
   document.getElementById('side-panel').classList.remove('deep-hidden');
+  saveStats(); window.__qp_pushCloud?.();
   switchMode('focus');showNotify('✦ Deep Work ended. Welcome back.');
 }
 
@@ -1290,9 +1177,9 @@ function toggleDeep(){
   showNotify(deepMode?'✦ Deep mode. Everything else fades.':'✦ Returning to the light.');
 }
 
-/* ══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
    BELL + TOAST + STATS/STREAK
-══════════════════════════════════════════════════ */
+═══════════════════════════════════════════════ */
 function playBell(){
   const ctx=new(window.AudioContext||window.webkitAudioContext)();
   [0,.3,.6].forEach((delay,i)=>{
@@ -1350,166 +1237,6 @@ function renderStreak(s,h){
 }
 
 loadStats();loadStreak();updateDisplay();
-
-/* ══════════════════════════════════════════════════
-   MUSIC VISUALIZER — bottom strip
-   Slides up as an in-flow panel below everything.
-   Since YouTube blocks direct audio capture (CORS),
-   we use smooth multi-octave noise that responds to
-   play state and current timer mode color palette.
-══════════════════════════════════════════════════ */
-const vizPanel  = document.getElementById('viz-panel');
-const vizCanvas = document.getElementById('viz-canvas');
-const vizCtx    = vizCanvas.getContext('2d');
-let vizActive   = false;
-let vizRaf      = null;
-let vizT        = 0;
-
-/* ── Noise helpers ── */
-function smoothNoise(t, freq = 1) {
-  const i = Math.floor(t * freq), f = (t * freq) - i;
-  const s = f * f * (3 - 2 * f);
-  const a = Math.sin(i * 127.1 + 311.7) * 43758.5453;
-  const b = Math.sin((i+1) * 127.1 + 311.7) * 43758.5453;
-  return (a - Math.floor(a)) * (1-s) + (b - Math.floor(b)) * s;
-}
-function fbm(t, oct = 4) {
-  let v = 0, amp = 0.5, freq = 1;
-  for (let o = 0; o < oct; o++) { v += smoothNoise(t, freq) * amp; freq *= 2.1; amp *= 0.5; }
-  return v;
-}
-
-function resizeViz() {
-  vizCanvas.width  = vizPanel.clientWidth  || window.innerWidth;
-  vizCanvas.height = vizPanel.clientHeight || 140;
-}
-window.addEventListener('resize', () => { if (vizActive) resizeViz(); });
-
-function toggleVisualizer() {
-  vizActive = !vizActive;
-  document.getElementById('viz-btn').classList.toggle('active', vizActive);
-  vizPanel.classList.toggle('open', vizActive);
-
-  if (vizActive) {
-    /* Wait for CSS transition to open, then size canvas */
-    setTimeout(() => {
-      resizeViz();
-      if (!vizRaf) drawViz();
-    }, 50);
-    showNotify('✦ Visualizer on.');
-  } else {
-    showNotify('✦ Visualizer off.');
-  }
-}
-
-function drawViz() {
-  vizRaf = requestAnimationFrame(drawViz);
-  if (!vizActive) { vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height); return; }
-
-  const W       = vizCanvas.width;
-  const H       = vizCanvas.height;
-  const playing = ytPlaying;
-  vizT += 0.007 * (playing ? 1 : 0.18);
-
-  vizCtx.clearRect(0, 0, W, H);
-
-  /* ── Mode palette ── */
-  const PAL = {
-    focus: ['#7fa3ff','#b6c8ff','#4460cc'],
-    break: ['#7fd4a0','#a8edbc','#3a9060'],
-    long:  ['#f4a97f','#f9cba8','#b06030'],
-    sixty: ['#fbbf24','#fde68a','#a07010'],
-    deep:  ['#c084fc','#e0b4ff','#7030b8'],
-  };
-  const [c1, c2, c3] = PAL[currentMode] || PAL.focus;
-
-  /* ─────────────────────────────────────
-     LAYER 1 — Frequency bars from bottom
-  ───────────────────────────────────── */
-  const BAR_N  = 80;
-  const BAR_W  = W / BAR_N;
-  const MAX_BH = H * 0.88;
-
-  for (let i = 0; i < BAR_N; i++) {
-    const noise = fbm(vizT + i * 0.16, 4);
-    const amp   = playing ? (0.18 + noise * 0.82) : (0.03 + noise * 0.1);
-    const bH    = amp * MAX_BH;
-    const x     = i * BAR_W;
-    const y     = H - bH;
-
-    const g = vizCtx.createLinearGradient(x, H, x, y);
-    g.addColorStop(0,    c1 + '00');
-    g.addColorStop(0.35, c1 + '66');
-    g.addColorStop(0.75, c2 + 'bb');
-    g.addColorStop(1,    c2 + 'ff');
-    vizCtx.fillStyle = g;
-    vizCtx.beginPath();
-    if (vizCtx.roundRect) vizCtx.roundRect(x + 0.5, y, BAR_W - 1, bH, [2, 2, 0, 0]);
-    else vizCtx.rect(x + 0.5, y, BAR_W - 1, bH);
-    vizCtx.fill();
-
-    /* Bright tip dot */
-    if (playing && bH > 8) {
-      vizCtx.fillStyle = c2 + 'ee';
-      vizCtx.beginPath();
-      vizCtx.arc(x + BAR_W / 2, y + 1.5, 1.5, 0, Math.PI * 2);
-      vizCtx.fill();
-    }
-  }
-
-  /* ─────────────────────────────────────
-     LAYER 2 — Mirrored top bars (dimmer)
-  ───────────────────────────────────── */
-  for (let i = 0; i < BAR_N; i++) {
-    const noise = fbm(vizT + i * 0.16 + 500, 3);
-    const amp   = playing ? (0.08 + noise * 0.28) : (0.015 + noise * 0.05);
-    const bH    = amp * MAX_BH * 0.45;
-    const x     = i * BAR_W;
-
-    const g = vizCtx.createLinearGradient(x, 0, x, bH);
-    g.addColorStop(0,   c3 + '99');
-    g.addColorStop(0.6, c1 + '33');
-    g.addColorStop(1,   c1 + '00');
-    vizCtx.fillStyle = g;
-    vizCtx.beginPath();
-    if (vizCtx.roundRect) vizCtx.roundRect(x + 0.5, 0, BAR_W - 1, bH, [0, 0, 2, 2]);
-    else vizCtx.rect(x + 0.5, 0, BAR_W - 1, bH);
-    vizCtx.fill();
-  }
-
-  /* ─────────────────────────────────────
-     LAYER 3 — Waveform centerline
-  ───────────────────────────────────── */
-  const wAmp = playing ? H * 0.14 : H * 0.03;
-  const midY = H * 0.5;
-
-  vizCtx.beginPath();
-  for (let xi = 0; xi <= W; xi += 2) {
-    const yn = midY + (fbm(vizT * 0.65 + xi / W * 7, 5) - 0.5) * 2 * wAmp;
-    xi === 0 ? vizCtx.moveTo(xi, yn) : vizCtx.lineTo(xi, yn);
-  }
-  const wg = vizCtx.createLinearGradient(0, 0, W, 0);
-  wg.addColorStop(0,   c1 + '00');
-  wg.addColorStop(0.15, c2 + '55');
-  wg.addColorStop(0.5,  c2 + (playing ? 'cc' : '44'));
-  wg.addColorStop(0.85, c2 + '55');
-  wg.addColorStop(1,   c1 + '00');
-  vizCtx.strokeStyle = wg;
-  vizCtx.lineWidth   = playing ? 1.8 : 1;
-  vizCtx.stroke();
-
-  /* ─────────────────────────────────────
-     LAYER 4 — Horizontal glow baseline
-  ───────────────────────────────────── */
-  const gBase = vizCtx.createLinearGradient(0, 0, W, 0);
-  gBase.addColorStop(0,   c1 + '00');
-  gBase.addColorStop(0.3, c1 + (playing ? '44' : '18'));
-  gBase.addColorStop(0.5, c2 + (playing ? '88' : '22'));
-  gBase.addColorStop(0.7, c1 + (playing ? '44' : '18'));
-  gBase.addColorStop(1,   c1 + '00');
-  vizCtx.fillStyle = gBase;
-  vizCtx.fillRect(0, H - 2, W, 2);
-}
 </script>
 </body>
 </html>
